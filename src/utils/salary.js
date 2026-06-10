@@ -1,29 +1,36 @@
 /**
  * Salary Calculation Formula:
- * Daily Rate = (Monthly Salary × 12) ÷ 365
- * Monthly Salary = Daily Rate × (Days in Month + Extra Paid Leave Days - Leaves Taken)
- * Final = Monthly Salary - Advance
+ *
+ * Daily Rate    = Monthly Salary ÷ Days in Month
+ * Gross Salary  = Monthly Salary + (Daily Rate × Earned Leave Days) − (Daily Rate × Leaves Taken)
+ *               = Monthly Salary + Daily Rate × (Earned Leave Days − Leaves Taken)
+ * Net Salary    = Gross Salary − Advance
+ *
+ * Example:
+ *   Monthly = ₹12,000, Days in Month = 30, Earned Leaves = 4, Taken = 1, Advance = 500
+ *   Daily Rate   = 12000 ÷ 30 = ₹400/day
+ *   Gross        = 12000 + 400×4 − 400×1 = 12000 + 1600 − 400 = ₹13,200
+ *   Net          = 13200 − 500 = ₹12,700
  */
 
 export function getDaysInMonth(year, month) {
-  // month is 1-based
   return new Date(year, month, 0).getDate();
 }
 
 export function calculateSalary({ monthlySalary, year, month, paidLeaves, leavesTaken, advance }) {
   const daysInMonth = getDaysInMonth(year, month);
 
-  // Daily rate based on annual average
-  const dailyRate = (monthlySalary * 12) / 365;
+  // Daily rate based on actual days in the month
+  const dailyRate = monthlySalary / daysInMonth;
 
-  // Effective working days = calendar days + paid leaves - leaves taken
-  const effectiveDays = daysInMonth + paidLeaves - leavesTaken;
+  // Gross = Base + (Daily Rate × Earned Leave Days) − (Daily Rate × Leaves Taken)
+  const grossSalary = monthlySalary + dailyRate * paidLeaves - dailyRate * leavesTaken;
 
-  // Gross salary for this month
-  const grossSalary = dailyRate * effectiveDays;
-
-  // Deduct advance
+  // Net = Gross − Advance
   const netSalary = grossSalary - advance;
+
+  // Effective days = base days + earned leaves − leaves taken (for display purposes)
+  const effectiveDays = daysInMonth + paidLeaves - leavesTaken;
 
   return {
     daysInMonth,

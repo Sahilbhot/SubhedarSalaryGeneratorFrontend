@@ -1,62 +1,93 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import EmployeesPage from './pages/EmployeesPage.jsx';
 import CalculateSalaryPage from './pages/CalculateSalaryPage.jsx';
 import logoUrl from './assets/logo.jpg';
 import './App.css';
 
 const NAV = [
-  { id: 'employees', label: 'Employees', icon: '👥' },
-  { id: 'calculate', label: 'Calculate Salary', icon: '🧮' },
+  { id: 'employees',  label: 'Employees',       icon: '👥' },
+  { id: 'calculate',  label: 'Calculate Salary', icon: '🧮' },
 ];
 
 export default function App() {
   const [active, setActive] = useState('employees');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navigate = useCallback((id) => {
+    setActive(id);
+    setSidebarOpen(false);
+  }, []);
+
+  const currentNav = NAV.find(n => n.id === active);
 
   return (
-    <div className="app">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <img src={logoUrl} alt="Hotel Subhedar" className="brand-logo" onError={e => { e.target.style.display = 'none'; }} />
-          <div className="brand-text">
-            <span className="brand-name">Hotel Subhedar</span>
-            <span className="brand-sub">Salary Manager</span>
-          </div>
-        </div>
-        <nav className="sidebar-nav">
-          {NAV.map(item => (
-            <button
-              key={item.id}
-              className={`nav-item ${active === item.id ? 'active' : ''}`}
-              onClick={() => setActive(item.id)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-footer">
-          <span>© 2025 Hotel Subhedar</span>
-        </div>
-      </aside>
+      <div className="app">
+        {/* Mobile sidebar overlay */}
+        <div
+            className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`}
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+        />
 
-      {/* Main content */}
-      <main className="main-content">
-        <header className="topbar">
-          <div className="topbar-title">
-            {NAV.find(n => n.id === active)?.icon}{' '}
-            {NAV.find(n => n.id === active)?.label}
+        {/* Sidebar */}
+        <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`} aria-label="Navigation">
+          <div className="sidebar-brand">
+            <img
+                src={logoUrl}
+                alt="Hotel Subhedar"
+                className="brand-logo"
+                onError={e => { e.target.style.display = 'none'; }}
+            />
+            <div className="brand-text">
+              <span className="brand-name">Hotel Subhedar</span>
+              <span className="brand-sub">Salary Manager</span>
+            </div>
           </div>
-          <div className="topbar-addr">
-            Sheetal Baug Rd, Bhosari, Pimpri-Chinchwad, MH 411039
-          </div>
-        </header>
 
-        <div className="content-area">
-          {active === 'employees' && <EmployeesPage />}
-          {active === 'calculate' && <CalculateSalaryPage />}
-        </div>
-      </main>
-    </div>
+          <nav className="sidebar-nav">
+            {NAV.map(item => (
+                <button
+                    key={item.id}
+                    className={`nav-item ${active === item.id ? 'active' : ''}`}
+                    onClick={() => navigate(item.id)}
+                    aria-current={active === item.id ? 'page' : undefined}
+                >
+                  <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+                  <span className="nav-label">{item.label}</span>
+                </button>
+            ))}
+          </nav>
+
+          <div className="sidebar-footer">© 2025 Hotel Subhedar</div>
+        </aside>
+
+        {/* Main content */}
+        <main className="main-content">
+          <header className="topbar">
+            <div className="topbar-left">
+              <button
+                  className="hamburger"
+                  onClick={() => setSidebarOpen(v => !v)}
+                  aria-label="Toggle menu"
+                  aria-expanded={sidebarOpen}
+              >
+                {sidebarOpen ? '✕' : '☰'}
+              </button>
+              <div className="topbar-title">
+                <span aria-hidden="true">{currentNav?.icon}</span>
+                {currentNav?.label}
+              </div>
+            </div>
+            <div className="topbar-addr">
+              Sheetal Baug Rd, Bhosari, Pimpri-Chinchwad, MH 411039
+            </div>
+          </header>
+
+          <div className="content-area">
+            {active === 'employees' && <EmployeesPage />}
+            {active === 'calculate' && <CalculateSalaryPage />}
+          </div>
+        </main>
+      </div>
   );
 }

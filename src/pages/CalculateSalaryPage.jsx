@@ -25,9 +25,9 @@ export default function CalculateSalaryPage() {
 
   useEffect(() => {
     api.getEmployees()
-      .then(res => setEmployees(res.data || []))
-      .catch(() => {})
-      .finally(() => setLoadingEmps(false));
+        .then(res => setEmployees(res.data || []))
+        .catch(() => {})
+        .finally(() => setLoadingEmps(false));
   }, []);
 
   function setField(name, value) {
@@ -58,9 +58,9 @@ export default function CalculateSalaryPage() {
     setResult({ ...calc, paidLeaves: Number(form.paidLeaves), leavesTaken: Number(form.leavesTaken) });
   }
 
-  function handleDownloadPDF() {
+  async function handleDownloadPDF() {
     if (!result || !selectedEmployee) return;
-    generateSalaryPDF({
+    await generateSalaryPDF({
       employee: selectedEmployee,
       calc: result,
       month: Number(form.month),
@@ -69,173 +69,167 @@ export default function CalculateSalaryPage() {
   }
 
   const daysPreview = form.year && form.month
-    ? getDaysInMonth(Number(form.year), Number(form.month))
-    : null;
+      ? getDaysInMonth(Number(form.year), Number(form.month))
+      : null;
 
   return (
-    <div className="page">
-      <div className="page-header">
-        <div>
-          <h2>Calculate Salary</h2>
-          <p className="page-sub">Compute monthly payroll for any employee</p>
-        </div>
-      </div>
-
-      <div className="calc-layout">
-        <form className="calc-form" onSubmit={handleCalculate} noValidate>
-          {/* Employee */}
-          <div className="field">
-            <label>Select Employee *</label>
-            <select
-              value={form.employeeId}
-              onChange={e => handleEmployeeChange(e.target.value)}
-              disabled={loadingEmps}
-            >
-              <option value="">{loadingEmps ? 'Loading…' : '— Select Employee —'}</option>
-              {employees.map(emp => (
-                <option key={emp.employee_id} value={emp.employee_id}>
-                  {emp.employee_name} — ₹{Number(emp.salary).toLocaleString('en-IN')}/mo
-                </option>
-              ))}
-            </select>
+      <div className="page">
+        <div className="page-header">
+          <div>
+            <h2>Calculate Salary</h2>
+            <p className="page-sub">Compute monthly payroll for any employee</p>
           </div>
+        </div>
 
-          {/* Month + Year */}
-          <div className="field-row">
+        <div className="calc-layout">
+          <form className="calc-form" onSubmit={handleCalculate} noValidate>
+            {/* Employee */}
             <div className="field">
-              <label>Month *</label>
-              <select value={form.month} onChange={e => setField('month', e.target.value)}>
-                {MONTHS.map((m, i) => (
-                  <option key={m} value={i + 1}>{m}</option>
+              <label>Select Employee *</label>
+              <select
+                  value={form.employeeId}
+                  onChange={e => handleEmployeeChange(e.target.value)}
+                  disabled={loadingEmps}
+              >
+                <option value="">{loadingEmps ? 'Loading…' : '— Select Employee —'}</option>
+                {employees.map(emp => (
+                    <option key={emp.employee_id} value={emp.employee_id}>
+                      {emp.employee_name} — ₹{Number(emp.salary).toLocaleString('en-IN')}/mo
+                    </option>
                 ))}
               </select>
             </div>
-            <div className="field">
-              <label>Year *</label>
-              <select value={form.year} onChange={e => setField('year', e.target.value)}>
-                {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-              </select>
-            </div>
-          </div>
 
-          {daysPreview && (
-            <div className="info-pill">
-              {MONTHS[Number(form.month) - 1]} {form.year} has <strong>{daysPreview} days</strong>
+            {/* Month + Year */}
+            <div className="field-row">
+              <div className="field">
+                <label>Month *</label>
+                <select value={form.month} onChange={e => setField('month', e.target.value)}>
+                  {MONTHS.map((m, i) => (
+                      <option key={m} value={i + 1}>{m}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <label>Year *</label>
+                <select value={form.year} onChange={e => setField('year', e.target.value)}>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
             </div>
-          )}
 
-          {/* Paid Leaves */}
-          <div className="field">
-            <label>
-              Paid Leave Days Added
-              <span className="field-hint">Default 4 — added to calendar days</span>
-            </label>
-            <input
-              type="number" min="0" max="31"
-              value={form.paidLeaves}
-              onChange={e => setField('paidLeaves', e.target.value)}
-            />
             {daysPreview && (
-              <span className="field-hint">
-                Total days after paid leave: {daysPreview} + {form.paidLeaves} = <strong>{Number(daysPreview) + Number(form.paidLeaves)}</strong>
-              </span>
-            )}
-          </div>
-
-          {/* Leaves Taken */}
-          <div className="field">
-            <label>
-              Leaves Taken
-              <span className="field-hint">Deducted from total days</span>
-            </label>
-            <input
-              type="number" min="0" max="31"
-              value={form.leavesTaken}
-              onChange={e => setField('leavesTaken', e.target.value)}
-            />
-            {daysPreview && (
-              <span className="field-hint">
-                Effective days: {Number(daysPreview) + Number(form.paidLeaves)} − {form.leavesTaken} = <strong>{Number(daysPreview) + Number(form.paidLeaves) - Number(form.leavesTaken)}</strong>
-              </span>
-            )}
-          </div>
-
-          {/* Advance */}
-          <div className="field">
-            <label>
-              Advance Taken (₹)
-              <span className="field-hint">Deducted from final salary</span>
-            </label>
-            <input
-              type="number" min="0" step="100"
-              value={form.advance}
-              onChange={e => setField('advance', e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-full">
-            Calculate Salary
-          </button>
-        </form>
-
-        {/* Result */}
-        {result && selectedEmployee && (
-          <div className="result-card">
-            <div className="result-header">
-              <div className="result-emp">{selectedEmployee.employee_name}</div>
-              <div className="result-period">
-                {MONTHS[Number(form.month) - 1]} {form.year}
-              </div>
-            </div>
-
-            <div className="result-rows">
-              <div className="result-row">
-                <span>Base Monthly Salary</span>
-                <span>{formatCurrency(selectedEmployee.salary)}</span>
-              </div>
-              <div className="result-row">
-                <span>Daily Rate (× 12 ÷ 365)</span>
-                <span>{formatCurrency(result.dailyRate)}/day</span>
-              </div>
-              <div className="result-row">
-                <span>Days in {MONTHS[Number(form.month) - 1]}</span>
-                <span>{result.daysInMonth} days</span>
-              </div>
-              <div className="result-row plus">
-                <span>Paid Leaves Added</span>
-                <span>+ {result.paidLeaves} days</span>
-              </div>
-              <div className="result-row minus">
-                <span>Leaves Taken</span>
-                <span>− {result.leavesTaken} days</span>
-              </div>
-              <div className="result-row bold">
-                <span>Effective Days</span>
-                <span>{result.effectiveDays} days</span>
-              </div>
-              <div className="result-row">
-                <span>Gross Salary</span>
-                <span>{formatCurrency(result.grossSalary)}</span>
-              </div>
-              {result.advanceDeduction > 0 && (
-                <div className="result-row minus">
-                  <span>Advance Deduction</span>
-                  <span>− {formatCurrency(result.advanceDeduction)}</span>
+                <div className="info-pill">
+                  {MONTHS[Number(form.month) - 1]} {form.year} has <strong>{daysPreview} days</strong>
+                  {' '}— Daily Rate = ₹{Number(selectedEmployee?.salary || 0).toLocaleString('en-IN')} ÷ {daysPreview}
                 </div>
-              )}
+            )}
+
+            {/* Earned (Paid) Leaves */}
+            <div className="field">
+              <label>
+                Earned Leave Days
+                <span className="field-hint">Salary is paid for these days (default 4)</span>
+              </label>
+              <input
+                  type="number" min="0" max="31"
+                  value={form.paidLeaves}
+                  onChange={e => setField('paidLeaves', e.target.value)}
+              />
             </div>
 
-            <div className="result-net">
-              <span>Net Payable</span>
-              <span>{formatCurrency(result.netSalary)}</span>
+            {/* Leaves Taken */}
+            <div className="field">
+              <label>
+                Leaves Taken
+                <span className="field-hint">Deducted from earned leave days</span>
+              </label>
+              <input
+                  type="number" min="0" max="31"
+                  value={form.leavesTaken}
+                  onChange={e => setField('leavesTaken', e.target.value)}
+              />
+              <span className="field-hint">
+              Effective days: {form.paidLeaves} − {form.leavesTaken} = <strong>{Number(form.paidLeaves) - Number(form.leavesTaken)}</strong>
+            </span>
             </div>
 
-            <button className="btn btn-primary btn-full" onClick={handleDownloadPDF}>
-              ⬇ Download PDF Salary Slip
+            {/* Advance */}
+            <div className="field">
+              <label>
+                Advance Taken (₹)
+                <span className="field-hint">Deducted from final salary</span>
+              </label>
+              <input
+                  type="number" min="0" step="100"
+                  value={form.advance}
+                  onChange={e => setField('advance', e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-full">
+              Calculate Salary
             </button>
-          </div>
-        )}
+          </form>
+
+          {/* Result */}
+          {result && selectedEmployee && (
+              <div className="result-card">
+                <div className="result-header">
+                  <div className="result-emp">{selectedEmployee.employee_name}</div>
+                  <div className="result-period">
+                    {MONTHS[Number(form.month) - 1]} {form.year}
+                  </div>
+                </div>
+
+                <div className="result-rows">
+                  <div className="result-row">
+                    <span>Base Monthly Salary</span>
+                    <span>{formatCurrency(selectedEmployee.salary)}</span>
+                  </div>
+                  <div className="result-row">
+                    <span>Days in {MONTHS[Number(form.month) - 1]}</span>
+                    <span>{result.daysInMonth} days</span>
+                  </div>
+                  <div className="result-row">
+                    <span>Daily Rate (Salary ÷ Days in Month)</span>
+                    <span>{formatCurrency(result.dailyRate)}/day</span>
+                  </div>
+                  <div className="result-row plus">
+                    <span>Earned Leave Days</span>
+                    <span>{result.paidLeaves} days</span>
+                  </div>
+                  <div className="result-row minus">
+                    <span>Leaves Taken</span>
+                    <span>− {result.leavesTaken} days</span>
+                  </div>
+                  <div className="result-row bold">
+                    <span>Effective Days</span>
+                    <span>{result.effectiveDays} days</span>
+                  </div>
+                  <div className="result-row">
+                    <span>Gross Salary (Daily Rate × {result.effectiveDays})</span>
+                    <span>{formatCurrency(result.grossSalary)}</span>
+                  </div>
+                  {result.advanceDeduction > 0 && (
+                      <div className="result-row minus">
+                        <span>Advance Deduction</span>
+                        <span>− {formatCurrency(result.advanceDeduction)}</span>
+                      </div>
+                  )}
+                </div>
+
+                <div className="result-net">
+                  <span>Net Payable</span>
+                  <span>{formatCurrency(result.netSalary)}</span>
+                </div>
+
+                <button className="btn btn-primary btn-full" onClick={handleDownloadPDF}>
+                  ⬇ Download PDF Salary Slip
+                </button>
+              </div>
+          )}
+        </div>
       </div>
-    </div>
   );
 }
