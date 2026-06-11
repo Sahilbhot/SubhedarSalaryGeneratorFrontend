@@ -35,7 +35,7 @@ export default function App({ onViewSite, onLogout }) {
     setSidebarOpen(false);
   }, []);
 
-  const currentNav = NAV.find(n => n.id === active);
+  // const currentNav = NAV.find(n => n.id === active);
 
   return (
       <div className="app">
