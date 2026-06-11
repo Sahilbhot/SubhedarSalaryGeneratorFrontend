@@ -4,12 +4,29 @@ import CalculateSalaryPage from './pages/CalculateSalaryPage.jsx';
 import logoUrl from './assets/logo.jpg';
 import './App.css';
 
+const svg = (d) => (
+  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{d}</svg>
+);
+const ICONS = {
+  employees: svg(<><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9.5" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>),
+  calculate: svg(<><rect x="4" y="2" width="16" height="20" rx="2" /><path d="M8 6h8M8 10h2M8 14h2M8 18h2M14 10h2M14 14h2M14 18h2" /></>),
+  globe: svg(<><circle cx="12" cy="12" r="10" /><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z" /></>),
+  logout: svg(<><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></>),
+};
+const PIN = (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
 const NAV = [
-  { id: 'employees',  label: 'Employees',       icon: '👥' },
-  { id: 'calculate',  label: 'Calculate Salary', icon: '🧮' },
+  { id: 'employees',  label: 'Employees',        icon: ICONS.employees },
+  { id: 'calculate',  label: 'Calculate Salary', icon: ICONS.calculate },
 ];
 
-export default function App() {
+export default function App({ onViewSite, onLogout }) {
   const [active, setActive] = useState('employees');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -45,6 +62,7 @@ export default function App() {
           </div>
 
           <nav className="sidebar-nav">
+            <div className="nav-section">Management</div>
             {NAV.map(item => (
                 <button
                     key={item.id}
@@ -58,7 +76,19 @@ export default function App() {
             ))}
           </nav>
 
-          <div className="sidebar-footer">© 2025 Hotel Subhedar</div>
+          <div className="sidebar-footer">
+            {(onViewSite || onLogout) && (
+                <div className="sidebar-actions">
+                  {onLogout && (
+                      <button className="sb-action sb-logout" onClick={onLogout}>
+                        <span className="nav-icon" aria-hidden="true">{ICONS.logout}</span>
+                        Logout
+                      </button>
+                  )}
+                </div>
+            )}
+            <div className="sidebar-copy">© 2026 Hotel Subhedar</div>
+          </div>
         </aside>
 
         {/* Main content */}
@@ -73,13 +103,13 @@ export default function App() {
               >
                 {sidebarOpen ? '✕' : '☰'}
               </button>
-              <div className="topbar-title">
+              {/* <div className="topbar-title">
                 <span aria-hidden="true">{currentNav?.icon}</span>
                 {currentNav?.label}
-              </div>
+              </div> */}
             </div>
             <div className="topbar-addr">
-              Sheetal Baug Rd, Bhosari, Pimpri-Chinchwad, MH 411039
+              {PIN} Sheetal Baug Rd, Bhosari, Pimpri-Chinchwad, MH 411039
             </div>
           </header>
 

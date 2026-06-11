@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 
 const EMPTY = { employee_name: '', phone_number: '', joining_date: '', salary: '' };
@@ -48,15 +49,17 @@ export default function EmployeeForm({ initial = EMPTY, onSubmit, onCancel, load
                 <input type="tel" placeholder="e.g. 9876543210" maxLength={10} {...field('phone_number')} />
                 {errors.phone_number && <span className="field-error">{errors.phone_number}</span>}
             </div>
-            <div className="field">
-                <label>Joining Date *</label>
-                <input type="date" {...field('joining_date')} />
-                {errors.joining_date && <span className="field-error">{errors.joining_date}</span>}
-            </div>
-            <div className="field">
-                <label>Salary / Month (₹) *</label>
-                <input type="number" min="1" step="100" placeholder="e.g. 12000" {...field('salary')} />
-                {errors.salary && <span className="field-error">{errors.salary}</span>}
+            <div className="field-row">
+                <div className="field">
+                    <label>Joining Date *</label>
+                    <input type="date" {...field('joining_date')} />
+                    {errors.joining_date && <span className="field-error">{errors.joining_date}</span>}
+                </div>
+                <div className="field">
+                    <label>Salary / Month (₹) *</label>
+                    <input type="number" min="1" step="100" placeholder="e.g. 12000" {...field('salary')} />
+                    {errors.salary && <span className="field-error">{errors.salary}</span>}
+                </div>
             </div>
             <div className="form-actions">
                 <button type="button" className="btn btn-ghost" onClick={onCancel} disabled={loading}>Cancel</button>

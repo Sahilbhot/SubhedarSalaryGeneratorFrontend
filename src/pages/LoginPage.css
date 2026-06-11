@@ -1,0 +1,109 @@
+/* ════════════════════════════════════════════════════════════
+   HOTEL SUBHEDAR — Staff Login
+   ════════════════════════════════════════════════════════════ */
+.login-page {
+    --red:      #c1272d;
+    --red-dark: #9e1c22;
+    --gold:     #e8b84b;
+    --ink:      #1a1410;
+    --muted:    #8a7c6a;
+    --line:     #e7ddcf;
+    --serif:    'Playfair Display', Georgia, serif;
+    --sans:     'Inter', system-ui, -apple-system, sans-serif;
+
+    position: fixed; inset: 0; z-index: 200;
+    display: grid; place-items: center; padding: 24px;
+    font-family: var(--sans); color: var(--ink);
+    background:
+        linear-gradient(135deg, rgba(20,14,10,0.93), rgba(20,14,10,0.82)),
+        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
+    overflow-y: auto;
+    animation: lp-fade .4s ease;
+}
+@keyframes lp-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.login-page * { box-sizing: border-box; }
+
+.lp-card {
+    width: 100%; max-width: 420px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 22px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+    padding: 40px 38px 34px;
+    animation: lp-rise .55s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes lp-rise { from { opacity: 0; transform: translateY(30px) scale(.97); } to { opacity: 1; transform: none; } }
+
+.lp-brand { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 26px; }
+.lp-logo {
+    width: 70px; height: 70px; object-fit: cover; border-radius: 18px;
+    border: 3px solid var(--gold); box-shadow: 0 10px 24px rgba(193,39,45,0.25); background: #fff;
+}
+.lp-name { font-family: var(--serif); font-weight: 700; font-size: 24px; color: var(--ink); margin-top: 14px; line-height: 1; }
+.lp-sub { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--red); font-weight: 600; margin-top: 5px; }
+.lp-mr { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--gold-dark, #c99a2e); margin-top: 10px; }
+
+.lp-head { text-align: center; margin-bottom: 24px; }
+.lp-head h2 { font-family: var(--serif); font-size: 26px; color: var(--ink); }
+.lp-head p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+.lp-field { margin-bottom: 16px; }
+.lp-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 7px; }
+.lp-input {
+    position: relative; display: flex; align-items: center;
+    border: 1.5px solid var(--line); border-radius: 12px; background: #faf7f2;
+    transition: border .2s, box-shadow .2s, background .2s;
+}
+.lp-input:focus-within { border-color: var(--red); box-shadow: 0 0 0 3px rgba(193,39,45,0.12); background: #fff; }
+.lp-input .lp-ic { display: grid; place-items: center; width: 44px; color: var(--muted); flex-shrink: 0; }
+.lp-input:focus-within .lp-ic { color: var(--red); }
+.lp-input input {
+    flex: 1; border: none; background: transparent; outline: none;
+    padding: 13px 12px 13px 0; font-family: var(--sans); font-size: 14.5px; color: var(--ink); min-width: 0;
+}
+.lp-input input::placeholder { color: #b3a78f; }
+.lp-eye {
+    border: none; background: transparent; cursor: pointer; color: var(--muted);
+    width: 44px; height: 100%; display: grid; place-items: center; flex-shrink: 0;
+}
+.lp-eye:hover { color: var(--red); }
+
+.lp-row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0 22px; }
+.lp-remember { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; }
+.lp-remember input { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; }
+.lp-forgot { font-size: 13px; color: var(--red); cursor: pointer; font-weight: 500; background: none; border: none; }
+.lp-forgot:hover { text-decoration: underline; }
+
+.lp-btn {
+    width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer;
+    background: var(--red); color: #fff; font-family: var(--sans); font-weight: 600; font-size: 15px;
+    letter-spacing: .3px; display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 12px 26px rgba(193,39,45,0.32); transition: background .2s, transform .2s, box-shadow .2s;
+}
+.lp-btn:hover:not(:disabled) { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 16px 30px rgba(193,39,45,0.4); }
+.lp-btn:active:not(:disabled) { transform: translateY(0); }
+.lp-btn:disabled { opacity: .75; cursor: not-allowed; }
+
+.lp-spin {
+    width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: #fff;
+    border-radius: 50%; animation: lp-rot .7s linear infinite;
+}
+@keyframes lp-rot { to { transform: rotate(360deg); } }
+
+.lp-error {
+    display: flex; align-items: center; gap: 9px; background: #fdecec; color: #b3201f;
+    border: 1px solid #f6c9c9; border-radius: 10px; padding: 11px 14px; font-size: 13.5px;
+    margin-bottom: 18px; animation: lp-shake .4s;
+}
+@keyframes lp-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+.lp-foot { text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.lp-back { background: none; border: none; color: var(--muted); font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; font-family: var(--sans); }
+.lp-back:hover { color: var(--red); }
+.lp-hint { font-size: 11.5px; color: #b3a78f; margin-top: 12px; }
+
+@media (max-width: 480px) {
+    .lp-card { padding: 32px 24px 28px; }
+}
