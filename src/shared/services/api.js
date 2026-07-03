@@ -13,7 +13,9 @@ async function request(path, options = {}) {
 export const api = {
   getEmployees: () => request('/api/employees'),
   getEmployee: (id) => request(`/api/employees/${id}`),
-  createEmployee: (data) => request('/api/employees', { method: 'POST', body: JSON.stringify(data) }),
-  updateEmployee: (id, data) => request(`/api/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  createEmployee: (data) =>
+    request('/api/employees', { method: 'POST', body: JSON.stringify(data) }),
+  updateEmployee: (id, data) =>
+    request(`/api/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteEmployee: (id) => request(`/api/employees/${id}`, { method: 'DELETE' }),
 };

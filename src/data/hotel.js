@@ -32,11 +32,20 @@ export const HOURS = [
 // Our Promise — shown in About Us as highlight cards.
 // `icon` is a Lucide icon name (mapped to a component in About.jsx).
 export const PROMISES = [
-  { icon: 'Leaf', text: 'All spices freshly hand-ground in-house every morning using traditional methods' },
+  {
+    icon: 'Leaf',
+    text: 'All spices freshly hand-ground in-house every morning using traditional methods',
+  },
   { icon: 'Ban', text: 'No ready-made masalas, no MSG, no artificial flavour enhancers' },
-  { icon: 'Palette', text: 'No artificial food colours — natural colour only from fresh ingredients and slow cooking' },
+  {
+    icon: 'Palette',
+    text: 'No artificial food colours — natural colour only from fresh ingredients and slow cooking',
+  },
   { icon: 'Droplets', text: 'Gravies prepared without starch or chemical thickeners' },
-  { icon: 'Beef', text: 'Only fresh, locally sourced meat and vegetables — never frozen or preserved' },
+  {
+    icon: 'Beef',
+    text: 'Only fresh, locally sourced meat and vegetables — never frozen or preserved',
+  },
   { icon: 'Flame', text: 'Cooked in small batches with minimal oil — oil is never reused' },
   { icon: 'ShieldCheck', text: 'No artificial preservatives at any stage' },
   { icon: 'Home', text: 'Honest, home-style cooking with refined traditional taste' },
@@ -80,17 +89,41 @@ export const MENU = [
   {
     category: 'Mutton Thali',
     items: [
-      { name: 'Subhedar Special Mutton Thali', price: 430, desc: 'Sukka + Rassa + Kheema + Sukhat + Aalni Soup + Indrayani Rice + Solkhadi + 2 Bhakri/Chapati' },
-      { name: 'Mutton Thali', price: 380, desc: 'Sukka + Rassa + Indrayani Rice + 2 Bhakri/Chapati' },
-      { name: 'Mutton Kheema Thali', price: 250, desc: 'Kheema + Rassa + Indrayani Rice + 2 Bhakri/Chapati' },
+      {
+        name: 'Subhedar Special Mutton Thali',
+        price: 430,
+        desc: 'Sukka + Rassa + Kheema + Sukhat + Aalni Soup + Indrayani Rice + Solkhadi + 2 Bhakri/Chapati',
+      },
+      {
+        name: 'Mutton Thali',
+        price: 380,
+        desc: 'Sukka + Rassa + Indrayani Rice + 2 Bhakri/Chapati',
+      },
+      {
+        name: 'Mutton Kheema Thali',
+        price: 250,
+        desc: 'Kheema + Rassa + Indrayani Rice + 2 Bhakri/Chapati',
+      },
     ],
   },
   {
     category: 'Chicken Thali',
     items: [
-      { name: 'Subhedar Special Chicken Thali', price: 360, desc: 'Sukka + Rassa + Kheema + Sukhat + Aalni Soup + Indrayani Rice + Solkhadi + 2 Bhakri/Chapati' },
-      { name: 'Chicken Thali', price: 310, desc: 'Sukka + Rassa + Indrayani Rice + 2 Bhakri/Chapati' },
-      { name: 'Chicken Kheema Thali', price: 230, desc: 'Kheema + Unlimited Rassa + Indrayani Rice + 2 Bhakri/Chapati' },
+      {
+        name: 'Subhedar Special Chicken Thali',
+        price: 360,
+        desc: 'Sukka + Rassa + Kheema + Sukhat + Aalni Soup + Indrayani Rice + Solkhadi + 2 Bhakri/Chapati',
+      },
+      {
+        name: 'Chicken Thali',
+        price: 310,
+        desc: 'Sukka + Rassa + Indrayani Rice + 2 Bhakri/Chapati',
+      },
+      {
+        name: 'Chicken Kheema Thali',
+        price: 230,
+        desc: 'Kheema + Unlimited Rassa + Indrayani Rice + 2 Bhakri/Chapati',
+      },
     ],
   },
   {

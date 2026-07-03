@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api } from '../services/api.js';
+import { api } from '@/shared/services/api.js';
 import EmployeeForm from '../components/EmployeeForm.jsx';
 import Modal from '../components/Modal.jsx';
 
@@ -18,14 +18,19 @@ export default function EmployeesPage() {
     try {
       const res = await api.getEmployees();
       setEmployees(res.data || []);
-    } catch (e) {
+    } catch {
       setError('Failed to load employees. Please try again.');
     } finally {
       setLoading(false);
     }
   }
 
-  useEffect(() => { load(); }, []);
+  // Fetch on mount. The synchronous setState inside load() is intentional
+  // (initial loading state) — safe for a one-shot mount fetch.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, []);
 
   async function handleAdd(data) {
     setSaving(true);
@@ -64,11 +69,19 @@ export default function EmployeesPage() {
   }
 
   function formatDate(d) {
-    return new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    return new Date(d).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
   }
 
   function formatSalary(s) {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(s);
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(s);
   }
 
   return (
@@ -93,7 +106,9 @@ export default function EmployeesPage() {
       {error && !loading && (
         <div className="alert alert-error">
           {error}
-          <button className="btn btn-ghost" onClick={load}>Retry</button>
+          <button className="btn btn-ghost" onClick={load}>
+            Retry
+          </button>
         </div>
       )}
 
@@ -126,14 +141,15 @@ export default function EmployeesPage() {
                   <td>{formatDate(emp.joining_date)}</td>
                   <td className="td-salary">{formatSalary(emp.salary)}</td>
                   <td className="td-actions">
-                    <button
-                      className="btn btn-sm btn-outline"
-                      onClick={() => setEditEmployee(emp)}
-                    >Edit</button>
+                    <button className="btn btn-sm btn-outline" onClick={() => setEditEmployee(emp)}>
+                      Edit
+                    </button>
                     <button
                       className="btn btn-sm btn-danger"
                       onClick={() => setDeleteId(emp.employee_id)}
-                    >Delete</button>
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -174,8 +190,12 @@ export default function EmployeesPage() {
             Are you sure you want to delete this employee? This action cannot be undone.
           </p>
           <div className="form-actions">
-            <button className="btn btn-ghost" onClick={() => setDeleteId(null)}>Cancel</button>
-            <button className="btn btn-danger" onClick={() => handleDelete(deleteId)}>Delete</button>
+            <button className="btn btn-ghost" onClick={() => setDeleteId(null)}>
+              Cancel
+            </button>
+            <button className="btn btn-danger" onClick={() => handleDelete(deleteId)}>
+              Delete
+            </button>
           </div>
         </Modal>
       )}

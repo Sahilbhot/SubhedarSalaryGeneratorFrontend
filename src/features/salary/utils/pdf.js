@@ -4,7 +4,7 @@ import { jsPDF } from 'jspdf';
 
 async function getLogoDataUrl() {
   try {
-    const response = await fetch(new URL('../assets/logo.jpg', import.meta.url).href);
+    const response = await fetch(new URL('../../../assets/logo.jpg', import.meta.url).href);
     const blob = await response.blob();
     return await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -22,8 +22,8 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
   const logoDataUrl = await getLogoDataUrl();
 
   const logoHtml = logoDataUrl
-      ? `<img src="${logoDataUrl}" alt="Hotel Subhedar Logo" style="height:70px;object-fit:contain;border-radius:6px;" />`
-      : `<div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#c2272d;">🏨</div>`;
+    ? `<img src="${logoDataUrl}" alt="Hotel Subhedar Logo" style="height:70px;object-fit:contain;border-radius:6px;" />`
+    : `<div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#c2272d;">🏨</div>`;
 
   // Build the slip HTML (inline styles only — no external font fetch needed at render time)
   const slipHTML = `
@@ -45,14 +45,19 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
         <div style="font-size:14px;color:#6b5c3e;margin-top:4px;">${monthName} ${year}</div>
       </div>
 
-      ${section('Employee Details', `
+      ${section(
+        'Employee Details',
+        `
         ${row('Name', employee.employee_name)}
         ${row('Phone', employee.phone_number || '—')}
         ${row('Joining Date', new Date(employee.joining_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }))}
         ${row('Monthly Salary (Base)', formatCurrency(employee.salary))}
-      `)}
+      `,
+      )}
 
-      ${section('Salary Calculation', `
+      ${section(
+        'Salary Calculation',
+        `
         ${row(`Days in ${monthName}`, `${calc.daysInMonth} days`)}
         ${row('Daily Rate (Salary ÷ Days in Month)', `${formatCurrency(calc.dailyRate)}/day`)}
         ${row('Earned Leave Days', `${calc.paidLeaves} days`)}
@@ -60,7 +65,8 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
         ${row('Effective Days (Earned − Taken)', `${calc.effectiveDays} days`)}
         ${row(`Gross Salary (Daily Rate × ${calc.effectiveDays})`, formatCurrency(calc.grossSalary))}
         ${calc.advanceDeduction > 0 ? row('Advance Deduction', `− ${formatCurrency(calc.advanceDeduction)}`) : ''}
-      `)}
+      `,
+      )}
 
       <div style="display:flex;justify-content:space-between;padding:12px 16px;background:#ffbe00;border-radius:6px;margin-top:16px;">
         <span style="font-size:15px;font-weight:700;color:#1a1208;">Net Amount Payable</span>
@@ -84,8 +90,8 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
     const slipEl = container.firstElementChild;
 
     const canvas = await html2canvas(slipEl, {
-      scale: 2,           // 2× for crisp text & logo
-      useCORS: true,      // allow cross-origin logo image
+      scale: 2, // 2× for crisp text & logo
+      useCORS: true, // allow cross-origin logo image
       logging: false,
       backgroundColor: '#ffffff',
     });
@@ -99,8 +105,8 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
     // Scale canvas to A4 width, keeping aspect ratio
     const canvasW = canvas.width;
     const canvasH = canvas.height;
-    const ratio   = A4_W / canvasW;
-    const pdfH    = Math.min(canvasH * ratio, A4_H); // cap at one A4 page
+    const ratio = A4_W / canvasW;
+    const pdfH = Math.min(canvasH * ratio, A4_H); // cap at one A4 page
 
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
     pdf.addImage(imgData, 'PNG', 0, 0, A4_W, pdfH);

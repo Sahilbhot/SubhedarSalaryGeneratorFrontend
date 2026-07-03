@@ -22,9 +22,15 @@
   --shadow-lg: 0 8px 24px rgba(45, 36, 23, 0.16);
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -129,8 +135,12 @@ body {
   color: var(--accent-color);
 }
 
-.nav-icon { font-size: 16px; }
-.nav-label { flex: 1; }
+.nav-icon {
+  font-size: 16px;
+}
+.nav-label {
+  flex: 1;
+}
 
 .sidebar-footer {
   padding: 14px 16px;
@@ -184,7 +194,8 @@ body {
 }
 
 /* ─── Page ───────────────────────────────────────────────────────── */
-.page {}
+.page {
+}
 
 .page-header {
   display: flex;
@@ -224,37 +235,55 @@ body {
   white-space: nowrap;
 }
 
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 
 .btn-primary {
   background: var(--accent-color);
   color: var(--heading-color);
 }
-.btn-primary:hover:not(:disabled) { background: #f0b000; box-shadow: var(--shadow-sm); }
+.btn-primary:hover:not(:disabled) {
+  background: #f0b000;
+  box-shadow: var(--shadow-sm);
+}
 
 .btn-ghost {
   background: transparent;
   color: var(--muted-color);
   border: 1px solid var(--border-color);
 }
-.btn-ghost:hover:not(:disabled) { background: var(--surface-color); color: var(--default-color); }
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-color);
+  color: var(--default-color);
+}
 
 .btn-outline {
   background: transparent;
   color: var(--default-color);
   border: 1px solid var(--border-color);
 }
-.btn-outline:hover:not(:disabled) { background: var(--surface-color); }
+.btn-outline:hover:not(:disabled) {
+  background: var(--surface-color);
+}
 
 .btn-danger {
   background: #fef2f2;
   color: var(--danger-color);
   border: 1px solid #fecaca;
 }
-.btn-danger:hover:not(:disabled) { background: #fee2e2; }
+.btn-danger:hover:not(:disabled) {
+  background: #fee2e2;
+}
 
-.btn-sm { padding: 5px 12px; font-size: 12px; }
-.btn-full { width: 100%; }
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+.btn-full {
+  width: 100%;
+}
 
 /* ─── Forms ──────────────────────────────────────────────────────── */
 .field {
@@ -354,14 +383,30 @@ body {
   color: var(--default-color);
 }
 
-.emp-table tr:last-child td { border-bottom: none; }
+.emp-table tr:last-child td {
+  border-bottom: none;
+}
 
-.emp-table tr:hover td { background: #faf8f4; }
+.emp-table tr:hover td {
+  background: #faf8f4;
+}
 
-.td-num { color: var(--muted-color); font-size: 13px; }
-.td-name { font-weight: 600; color: var(--heading-color); }
-.td-salary { font-weight: 600; color: var(--secondary-color); }
-.td-actions { display: flex; gap: 6px; }
+.td-num {
+  color: var(--muted-color);
+  font-size: 13px;
+}
+.td-name {
+  font-weight: 600;
+  color: var(--heading-color);
+}
+.td-salary {
+  font-weight: 600;
+  color: var(--secondary-color);
+}
+.td-actions {
+  display: flex;
+  gap: 6px;
+}
 
 /* ─── State boxes ────────────────────────────────────────────────── */
 .state-box {
@@ -375,7 +420,9 @@ body {
   color: var(--muted-color);
 }
 
-.empty-icon { font-size: 40px; }
+.empty-icon {
+  font-size: 40px;
+}
 
 .spinner {
   width: 32px;
@@ -385,7 +432,11 @@ body {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 .alert {
   display: flex;
@@ -450,7 +501,10 @@ body {
   border-radius: 4px;
   line-height: 1;
 }
-.modal-close:hover { background: var(--surface-color); color: var(--default-color); }
+.modal-close:hover {
+  background: var(--surface-color);
+  color: var(--default-color);
+}
 
 .modal-body {
   padding: 20px;
@@ -525,10 +579,21 @@ body {
   border-bottom: 1px dotted #f0ebe0;
   color: var(--default-color);
 }
-.result-row:last-child { border-bottom: none; }
-.result-row.plus span:last-child { color: var(--success-color); font-weight: 600; }
-.result-row.minus span:last-child { color: var(--danger-color); font-weight: 600; }
-.result-row.bold { font-weight: 700; color: var(--heading-color); }
+.result-row:last-child {
+  border-bottom: none;
+}
+.result-row.plus span:last-child {
+  color: var(--success-color);
+  font-weight: 600;
+}
+.result-row.minus span:last-child {
+  color: var(--danger-color);
+  font-weight: 600;
+}
+.result-row.bold {
+  font-weight: 700;
+  color: var(--heading-color);
+}
 
 .result-net {
   display: flex;
@@ -540,27 +605,57 @@ body {
   color: var(--heading-color);
 }
 
-.result-net span:first-child { font-size: 14px; }
-.result-net span:last-child { font-size: 20px; }
+.result-net span:first-child {
+  font-size: 14px;
+}
+.result-net span:last-child {
+  font-size: 20px;
+}
 
-.result-card .btn { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+.result-card .btn {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
 
 /* ─── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .sidebar {
     width: 60px;
   }
-  .brand-text, .nav-label, .sidebar-footer { display: none; }
-  .sidebar-brand { padding: 16px 10px; justify-content: center; }
-  .nav-item { justify-content: center; padding: 10px; }
-  .main-content { margin-left: 60px; }
-  .topbar-addr { display: none; }
+  .brand-text,
+  .nav-label,
+  .sidebar-footer {
+    display: none;
+  }
+  .sidebar-brand {
+    padding: 16px 10px;
+    justify-content: center;
+  }
+  .nav-item {
+    justify-content: center;
+    padding: 10px;
+  }
+  .main-content {
+    margin-left: 60px;
+  }
+  .topbar-addr {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .calc-layout { grid-template-columns: 1fr; }
-  .content-area { padding: 16px; }
-  .page-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .calc-layout {
+    grid-template-columns: 1fr;
+  }
+  .content-area {
+    padding: 16px;
+  }
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
   .emp-table th:nth-child(2),
-  .emp-table td:nth-child(2) { display: none; }
+  .emp-table td:nth-child(2) {
+    display: none;
+  }
 }
