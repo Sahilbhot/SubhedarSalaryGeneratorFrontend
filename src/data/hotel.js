@@ -200,3 +200,36 @@ export const GALLERY = [
   { title: 'Solkadhi', emoji: '🥥' },
   { title: 'Chicken Sukka', emoji: '🍗' },
 ];
+
+// Aggregate rating shown above the testimonials (update to match Google).
+export const REVIEW_SUMMARY = { rating: 4.8, count: 240 };
+
+// Testimonials — SAMPLE placeholders until live Google reviews are wired up.
+// Each item: { author, rating (1–5), time, text, photo? }
+// These are replaced at runtime when the reviews API is configured (see Testimonials.jsx).
+export const TESTIMONIALS = [
+  {
+    author: 'Rohit Deshmukh',
+    rating: 5,
+    time: 'a week ago',
+    text: 'Absolutely authentic gavran taste! The Subhedar Special Mutton Thali was outstanding — freshly ground masalas and the bhakri was perfect. Feels just like home food.',
+  },
+  {
+    author: 'Priya Kulkarni',
+    rating: 5,
+    time: '2 weeks ago',
+    text: 'Best Maharashtrian non-veg in Bhosari. The chicken sukka and solkadhi were delicious. Clean place, warm service. Highly recommended!',
+  },
+  {
+    author: 'Amit Patil',
+    rating: 5,
+    time: 'a month ago',
+    text: 'Loved the mutton handi and kheema. Portions are generous and the flavours are honest — no artificial masalas. Worth every rupee.',
+  },
+  {
+    author: 'Sneha Jadhav',
+    rating: 4,
+    time: 'a month ago',
+    text: 'Great food and cozy ambience. The aalni soup and rassa were flavourful. Do allow some time as everything is freshly cooked.',
+  },
+];

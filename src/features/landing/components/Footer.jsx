@@ -6,6 +6,7 @@ const LINKS = [
   { id: 'home', label: 'Home' },
   { id: 'about', label: 'About Us' },
   { id: 'menu', label: 'Menu' },
+  { id: 'testimonials', label: 'Reviews' },
   { id: 'contact', label: 'Contact Us' },
 ];
 
