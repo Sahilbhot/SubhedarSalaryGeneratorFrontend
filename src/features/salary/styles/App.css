@@ -895,3 +895,45 @@ body {
     width: 100%;
   }
 }
+
+/* ─── Status badges (Users / Branches) ─── */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.badge-on {
+  background: #dcfce7;
+  color: var(--success);
+}
+.badge-off {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ─── Sidebar user block (auth) ─── */
+.sidebar-user {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: rgba(255, 190, 0, 0.1);
+}
+.sidebar-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-role {
+  font-size: 11px;
+  color: rgba(232, 223, 200, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}

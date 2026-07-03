@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/shared/services/api.js';
 import EmployeeForm from '../components/EmployeeForm.jsx';
-import Modal from '../components/Modal.jsx';
+import Modal from '@/shared/components/Modal.jsx';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState([]);
