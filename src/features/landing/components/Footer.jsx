@@ -1,5 +1,5 @@
 import { Camera, Phone, MapPin } from 'lucide-react';
-import logoUrl from '@/assets/logo.jpg';
+import logoUrl from '@/assets/logo.png';
 import { HOTEL, HOURS } from '@/data/hotel.js';
 
 const LINKS = [
