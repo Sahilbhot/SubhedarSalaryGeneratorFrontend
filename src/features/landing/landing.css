@@ -840,26 +840,36 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  max-width: 760px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 .lp-carousel-viewport {
   overflow: hidden;
   flex: 1;
-  border-radius: 20px;
+  padding: 4px 0;
 }
 .lp-carousel-track {
   display: flex;
+  width: 100%;
+  align-items: stretch;
   transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.lp-review {
-  flex: 0 0 100%;
-  min-width: 100%;
+.lp-slide {
+  flex: 0 0 calc(100% / var(--per-view, 1));
   box-sizing: border-box;
+  padding: 0 10px;
+  display: flex;
+}
+.lp-review {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 34px 32px;
+  padding: 30px 26px;
   text-align: center;
   box-shadow: var(--shadow-sm);
 }
@@ -877,14 +887,42 @@
   font-size: clamp(17px, 2.4vw, 21px);
   line-height: 1.6;
   color: var(--text);
-  margin: 0 0 22px;
-  min-height: 84px;
+  margin: 0 0 10px;
+  /* Clamp to a fixed number of lines so every card is the same height. */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 132px;
+}
+.lp-review-text.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+.lp-review-more {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 16px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--red);
+  cursor: pointer;
+}
+.lp-review-more:hover {
+  text-decoration: underline;
 }
 .lp-review-author {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   text-align: left;
+  margin-top: auto;
 }
 .lp-review-avatar {
   width: 46px;
