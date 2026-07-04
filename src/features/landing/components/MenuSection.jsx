@@ -69,7 +69,13 @@ export default function MenuSection() {
           className="lp-menu-accordion"
         >
           {menu.map((cat) => (
-            <AccordionItem key={cat.category} value={cat.category} className="lp-acc-item">
+            <AccordionItem
+              key={cat.category}
+              value={cat.category}
+              className={`lp-acc-item${
+                cat.category.toLowerCase().includes('veg dish') ? ' lp-acc-item--veg' : ''
+              }`}
+            >
               <AccordionTrigger className="lp-acc-header">
                 <span className="lp-acc-title">{cat.category}</span>
                 <span className="lp-acc-count">{cat.items.length}</span>

@@ -641,6 +641,13 @@
 .lp-acc-item[data-state='open'] .lp-acc-title {
   color: var(--red);
 }
+/* Veg Dish section: hover / open highlight in green instead of red */
+.lp-acc-item--veg .lp-acc-header:hover {
+  color: #1a9c4a;
+}
+.lp-acc-item--veg[data-state='open'] .lp-acc-title {
+  color: #1a9c4a;
+}
 .lp-acc-count {
   font-family: var(--font-body);
   font-size: 12px;
