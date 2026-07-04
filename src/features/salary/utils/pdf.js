@@ -33,9 +33,9 @@ export async function generateSalaryPDF({ employee, calc, month, year }) {
         <div style="flex:1;">
           <div style="font-size:26px;font-weight:700;color:#c2272d;">Hotel Subhedar</div>
           <div style="font-size:12px;color:#6b5c3e;margin-top:4px;line-height:1.5;">
-            Sheetal Baug Rd, Century Enka Colony<br/>
-            Bhosari, Pimpri-Chinchwad<br/>
-            Maharashtra 411039
+            Sheetal Baug Road, Nashik-Pune Highway<br/>
+            Bhosari, Pimpri Chinchwad<br/>
+            Pune - 411039
           </div>
         </div>
       </div>

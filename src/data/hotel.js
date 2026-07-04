@@ -8,10 +8,10 @@ export const HOTEL = {
   established: 2026,
   type: 'Authentic Maharashtrian Restaurant',
   address: {
-    line1: 'Sheetal Baug Rd, Century Enka Colony',
-    line2: 'Bhosari, Pimpri-Chinchwad',
-    city: 'Pune, Maharashtra 411039',
-    full: 'Sheetal Baug Rd, Century Enka Colony, Bhosari, Pimpri-Chinchwad, Pune, Maharashtra 411039',
+    line1: 'Sheetal Baug Road, Nashik-Pune Highway',
+    line2: 'Bhosari, Pimpri Chinchwad',
+    city: 'Pune - 411039',
+    full: 'Sheetal Baug Road, Nashik-Pune Highway, Bhosari, Pimpri Chinchwad, Pune - 411039',
   },
   phone: '+91 72181 00050',
   phoneRaw: '917218100050', // for tel: / wa.me links

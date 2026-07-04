@@ -26,9 +26,7 @@ export default function Footer() {
               />
               <div>
                 <div className="n">{HOTEL.name}</div>
-                <div className="t">
-                  {HOTEL.tagline} · {HOTEL.taglineMarathi}
-                </div>
+                <div className="t">{HOTEL.taglineMarathi}</div>
               </div>
             </div>
             <p>

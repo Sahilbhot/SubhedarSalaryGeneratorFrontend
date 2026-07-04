@@ -223,7 +223,7 @@ export default function AdminApp({ onExit }) {
           </div>
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden text-xs text-muted-foreground lg:block">
-              Sheetal Baug Rd, Bhosari, Pimpri-Chinchwad, MH 411039
+              Sheetal Baug Road, Nashik-Pune Highway, Bhosari, Pimpri Chinchwad, Pune - 411039
             </div>
             <Button
               variant="ghost"
