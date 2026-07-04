@@ -54,6 +54,16 @@ export const api = {
     request(`/api/employees/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteEmployee: (id) => request(`/api/employees/${id}`, { method: 'DELETE' }),
 
+  // ── Menu ──
+  // Public: available items only (used by the landing page, no auth).
+  getMenu: () => request('/api/menu'),
+  // Admin: every item, including hidden ones.
+  getMenuItems: () => request('/api/menu/all'),
+  createMenuItem: (data) => request('/api/menu', { method: 'POST', body: JSON.stringify(data) }),
+  updateMenuItem: (id, data) =>
+    request(`/api/menu/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteMenuItem: (id) => request(`/api/menu/${id}`, { method: 'DELETE' }),
+
   // ── Users (admin) ──
   getUsers: (params) => request(`/api/users${toQuery(params)}`),
   createUser: (data) => request('/api/users', { method: 'POST', body: JSON.stringify(data) }),

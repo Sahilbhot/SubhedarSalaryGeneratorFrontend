@@ -4,6 +4,7 @@ import {
   Calculator,
   ShieldCheck,
   Building2,
+  UtensilsCrossed,
   LogOut,
   ArrowLeft,
   Menu,
@@ -13,6 +14,7 @@ import EmployeesPage from './pages/EmployeesPage.jsx';
 import CalculateSalaryPage from './pages/CalculateSalaryPage.jsx';
 import UsersPage from '@/features/users/UsersPage.jsx';
 import BranchesPage from '@/features/branches/BranchesPage.jsx';
+import MenuPage from '@/features/menu/MenuPage.jsx';
 import { useAuth } from '@/features/auth/AuthContext.jsx';
 import { ROLES, ROLE_LABELS } from '@/shared/constants/roles.js';
 import logoUrl from '@/assets/logo.jpg';
@@ -27,6 +29,7 @@ const NAV = [
     icon: Calculator,
     roles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.STAFF],
   },
+  { id: 'menu', label: 'Menu', icon: UtensilsCrossed, roles: [ROLES.ADMIN, ROLES.MANAGER] },
   { id: 'users', label: 'Users', icon: ShieldCheck, roles: [ROLES.ADMIN] },
   { id: 'branches', label: 'Branches', icon: Building2, roles: [ROLES.ADMIN] },
 ];
@@ -34,6 +37,7 @@ const NAV = [
 const PAGES = {
   employees: EmployeesPage,
   calculate: CalculateSalaryPage,
+  menu: MenuPage,
   users: UsersPage,
   branches: BranchesPage,
 };

@@ -937,3 +937,104 @@ body {
   letter-spacing: 0.5px;
   margin-top: 2px;
 }
+
+/* ─── Menu management ─── */
+.field textarea {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-body);
+  background: var(--surface);
+  outline: none;
+  resize: vertical;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+.field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 190, 0, 0.18);
+}
+.field textarea::placeholder {
+  color: var(--text-subtle);
+}
+
+.field-checkbox label {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.field-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.menu-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.menu-filter label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.menu-filter select {
+  height: 38px;
+  padding: 0 34px 0 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-body);
+  background: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a6a52' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.td-desc {
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  max-width: 320px;
+}
+
+.veg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.veg-badge .veg-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1.5px solid currentColor;
+  position: relative;
+}
+.veg-badge .veg-dot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.veg-badge.veg {
+  color: #1a7f37;
+}
+.veg-badge.nonveg {
+  color: #c2272d;
+}
