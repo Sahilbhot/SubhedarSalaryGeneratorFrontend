@@ -57,8 +57,8 @@ export const api = {
   // ── Menu ──
   // Public: available items only (used by the landing page, no auth).
   getMenu: () => request('/api/menu'),
-  // Admin: every item, including hidden ones.
-  getMenuItems: () => request('/api/menu/all'),
+  // Admin: every item, including hidden ones. Optional { search }.
+  getMenuItems: (params) => request(`/api/menu/all${toQuery(params)}`),
   createMenuItem: (data) => request('/api/menu', { method: 'POST', body: JSON.stringify(data) }),
   updateMenuItem: (id, data) =>
     request(`/api/menu/${id}`, { method: 'PUT', body: JSON.stringify(data) }),

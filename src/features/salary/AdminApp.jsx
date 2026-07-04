@@ -43,6 +43,7 @@ import {
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 
 // Each nav item lists the roles allowed to see it.
@@ -78,6 +79,37 @@ function initials(name = '') {
       .map((w) => w[0])
       .join('')
       .toUpperCase() || 'U'
+  );
+}
+
+// Nav list lives in its own component so it can read useSidebar() and close the
+// mobile sidebar sheet after a page is selected.
+function NavMenu({ nav, active, onNavigate }) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  function handleSelect(id) {
+    onNavigate(id);
+    if (isMobile) setOpenMobile(false);
+  }
+
+  return (
+    <SidebarMenu>
+      {nav.map((item) => {
+        const Icon = item.icon;
+        return (
+          <SidebarMenuItem key={item.id}>
+            <SidebarMenuButton
+              isActive={active === item.id}
+              onClick={() => handleSelect(item.id)}
+              tooltip={item.label}
+            >
+              <Icon />
+              <span>{item.label}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
+    </SidebarMenu>
   );
 }
 
@@ -140,23 +172,7 @@ export default function AdminApp({ onExit }) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu>
-                {nav.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton
-                        isActive={active === item.id}
-                        onClick={() => navigate(item.id)}
-                        tooltip={item.label}
-                      >
-                        <Icon />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
+              <NavMenu nav={nav} active={active} onNavigate={navigate} />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>

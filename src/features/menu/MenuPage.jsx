@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Search, X } from 'lucide-react';
 import { api } from '@/shared/services/api.js';
 import Modal from '@/shared/components/Modal.jsx';
 import MenuForm from './MenuForm.jsx';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -22,6 +23,12 @@ import {
 } from '@/components/ui/table';
 
 const ALL = 'All';
+
+// Prices are free text ("270", "580/950"); use the first number for sort/filter.
+function priceNum(p) {
+  const m = String(p ?? '').match(/\d+/);
+  return m ? Number(m[0]) : 0;
+}
 
 function VegBadge({ type }) {
   const veg = type === 'veg';
@@ -44,41 +51,73 @@ export default function MenuPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [section, setSection] = useState(ALL);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all'); // all | veg | non-veg
+  const [visibleFilter, setVisibleFilter] = useState('all'); // all | yes | no
+  const [sort, setSort] = useState('default'); // default | asc | desc
+  const [maxPrice, setMaxPrice] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  async function load() {
+  const load = useCallback(async (searchTerm) => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.getMenuItems();
+      const res = await api.getMenuItems(searchTerm ? { search: searchTerm } : undefined);
       setItems(res.data || []);
     } catch {
       setError('Failed to load menu items. Please try again.');
     } finally {
       setLoading(false);
     }
-  }
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    load();
   }, []);
+
+  // Debounced fetch: runs on mount (empty search) and whenever the query changes.
+  useEffect(() => {
+    const t = setTimeout(() => load(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search, load]);
 
   const sections = useMemo(
     () => [ALL, ...Array.from(new Set(items.map((i) => i.section)))],
     [items],
   );
-  const visible = section === ALL ? items : items.filter((i) => i.section === section);
+  const anyFilterActive =
+    section !== ALL ||
+    typeFilter !== 'all' ||
+    visibleFilter !== 'all' ||
+    sort !== 'default' ||
+    maxPrice !== '';
+
+  function resetFilters() {
+    setSection(ALL);
+    setTypeFilter('all');
+    setVisibleFilter('all');
+    setSort('default');
+    setMaxPrice('');
+  }
+
+  const visible = useMemo(() => {
+    let list = items;
+    if (section !== ALL) list = list.filter((i) => i.section === section);
+    if (typeFilter !== 'all') list = list.filter((i) => i.type === typeFilter);
+    if (visibleFilter !== 'all')
+      list = list.filter((i) => (visibleFilter === 'yes' ? i.is_available : !i.is_available));
+    if (maxPrice !== '' && !isNaN(Number(maxPrice)))
+      list = list.filter((i) => priceNum(i.price) <= Number(maxPrice));
+    if (sort === 'asc') list = [...list].sort((a, b) => priceNum(a.price) - priceNum(b.price));
+    else if (sort === 'desc') list = [...list].sort((a, b) => priceNum(b.price) - priceNum(a.price));
+    return list;
+  }, [items, section, typeFilter, visibleFilter, maxPrice, sort]);
 
   async function handleAdd(data) {
     setSaving(true);
     try {
       await api.createMenuItem(data);
       setShowAddModal(false);
-      load();
+      load(search.trim());
     } catch (e) {
       alert('Failed to add item: ' + e.message);
     } finally {
@@ -91,7 +130,7 @@ export default function MenuPage() {
     try {
       await api.updateMenuItem(editItem.menu_item_id, data);
       setEditItem(null);
-      load();
+      load(search.trim());
     } catch (e) {
       alert('Failed to update item: ' + e.message);
     } finally {
@@ -103,7 +142,7 @@ export default function MenuPage() {
     try {
       await api.deleteMenuItem(id);
       setDeleteId(null);
-      load();
+      load(search.trim());
     } catch (e) {
       alert('Failed to delete item: ' + e.message);
     }
@@ -121,23 +160,98 @@ export default function MenuPage() {
         <Button onClick={() => setShowAddModal(true)}>+ Add Item</Button>
       </div>
 
-      {!loading && !error && items.length > 0 && (
-        <div className="mb-4 flex items-center gap-2.5">
-          <Label htmlFor="section-filter" className="text-muted-foreground">
-            Section
-          </Label>
+      {!error && (items.length > 0 || search.trim()) && (
+        <div className="mb-4 flex flex-wrap items-center gap-2.5">
+          {/* Search (type=text so browsers don't add a second native clear button) */}
+          <div className="relative w-full sm:w-64">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search name, description, section…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 pr-8"
+              aria-label="Search menu items"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                aria-label="Clear search"
+                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
+
           <Select value={section} onValueChange={setSection}>
-            <SelectTrigger id="section-filter" size="sm" className="w-56">
+            <SelectTrigger size="sm" className="w-44" aria-label="Filter by section">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {sections.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {s}
+                  {s === ALL ? 'All sections' : s}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger size="sm" className="w-32" aria-label="Filter by type">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All types</SelectItem>
+              <SelectItem value="veg">Veg</SelectItem>
+              <SelectItem value="non-veg">Non-Veg</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={visibleFilter} onValueChange={setVisibleFilter}>
+            <SelectTrigger size="sm" className="w-36" aria-label="Filter by visibility">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All visibility</SelectItem>
+              <SelectItem value="yes">Visible</SelectItem>
+              <SelectItem value="no">Hidden</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger size="sm" className="w-40" aria-label="Sort by price">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Sort: default</SelectItem>
+              <SelectItem value="asc">Price: low → high</SelectItem>
+              <SelectItem value="desc">Price: high → low</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="relative w-28">
+            <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-sm text-muted-foreground">
+              ₹
+            </span>
+            <Input
+              type="number"
+              min="0"
+              inputMode="numeric"
+              placeholder="Max"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="h-8 pl-6"
+              aria-label="Maximum price"
+            />
+          </div>
+
+          {anyFilterActive && (
+            <Button variant="ghost" size="sm" onClick={resetFilters}>
+              Clear filters
+            </Button>
+          )}
         </div>
       )}
 
@@ -151,7 +265,7 @@ export default function MenuPage() {
       {error && !loading && (
         <div className="flex items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
-          <Button variant="ghost" size="sm" onClick={load}>
+          <Button variant="ghost" size="sm" onClick={() => load(search.trim())}>
             Retry
           </Button>
         </div>
@@ -160,7 +274,33 @@ export default function MenuPage() {
       {!loading && !error && items.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
           <div className="text-4xl">🍽️</div>
-          <p>No menu items yet. Add your first dish to get started.</p>
+          {search.trim() ? (
+            <p>
+              No items match “{search.trim()}”.{' '}
+              <button
+                type="button"
+                className="text-foreground underline underline-offset-2"
+                onClick={() => setSearch('')}
+              >
+                Clear search
+              </button>
+            </p>
+          ) : (
+            <p>No menu items yet. Add your first dish to get started.</p>
+          )}
+        </div>
+      )}
+
+      {!loading && !error && items.length > 0 && visible.length === 0 && (
+        <div className="py-10 text-center text-sm text-muted-foreground">
+          No items match the current filters.{' '}
+          <button
+            type="button"
+            className="text-foreground underline underline-offset-2"
+            onClick={resetFilters}
+          >
+            Clear filters
+          </button>
         </div>
       )}
 
