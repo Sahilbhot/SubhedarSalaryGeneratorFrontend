@@ -12,7 +12,7 @@ export default function Hero() {
         <span className="lp-hero-est">
           <Sparkles /> Est. {HOTEL.established} · {HOTEL.type}
         </span>
-        <h1>{HOTEL.name}</h1>
+        <h1>Subhedar</h1>
         <p className="lp-hero-marathi" lang="mr">
           {HOTEL.taglineMarathi}
         </p>
