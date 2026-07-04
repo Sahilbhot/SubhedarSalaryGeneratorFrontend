@@ -2,6 +2,25 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/shared/services/api.js';
 import Modal from '@/shared/components/Modal.jsx';
 import { ROLES, ROLE_LABELS, BRANCH_SCOPED_ROLES } from '@/shared/constants/roles.js';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const EMPTY_FORM = { name: '', email: '', password: '', role: ROLES.STAFF, branch_id: '' };
 
@@ -53,7 +72,7 @@ export default function UsersPage() {
       email: user.email,
       password: '',
       role: user.role,
-      branch_id: user.branch_id ?? '',
+      branch_id: user.branch_id != null ? String(user.branch_id) : '',
     });
     setFormError('');
     setShowForm(true);
@@ -106,105 +125,106 @@ export default function UsersPage() {
   const branchScoped = BRANCH_SCOPED_ROLES.includes(form.role);
 
   return (
-    <div className="page">
-      <div className="page-header">
+    <div>
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2>Users</h2>
-          <p className="page-sub">Manage staff accounts and roles</p>
+          <h2 className="font-display text-2xl font-bold text-foreground">Users</h2>
+          <p className="text-sm text-muted-foreground">Manage staff accounts and roles</p>
         </div>
-        <button className="btn btn-primary" onClick={openCreate}>
-          + Add User
-        </button>
+        <Button onClick={openCreate}>+ Add User</Button>
       </div>
 
       {loading && (
-        <div className="state-box">
-          <div className="spinner" />
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+          <div className="size-8 animate-spin rounded-full border-[3px] border-border border-t-primary" />
           <p>Loading users…</p>
         </div>
       )}
 
       {error && !loading && (
-        <div className="alert alert-error">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
-          <button className="btn btn-ghost" onClick={load}>
+          <Button variant="ghost" size="sm" onClick={load}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
       {!loading && !error && (
-        <div className="emp-table-wrap">
-          <table className="emp-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Branch</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary/60">
+                <TableHead className="w-10">#</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Branch</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {users.map((u, i) => (
-                <tr key={u.id}>
-                  <td className="td-num">{i + 1}</td>
-                  <td className="td-name">{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{ROLE_LABELS[u.role] || u.role}</td>
-                  <td>{u.role === ROLES.ADMIN ? 'All branches' : branchName(u.branch_id)}</td>
-                  <td>
-                    <span className={`badge ${u.is_active ? 'badge-on' : 'badge-off'}`}>
+                <TableRow key={u.id}>
+                  <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                  <TableCell className="font-semibold text-foreground">{u.name}</TableCell>
+                  <TableCell>{u.email}</TableCell>
+                  <TableCell>{ROLE_LABELS[u.role] || u.role}</TableCell>
+                  <TableCell>
+                    {u.role === ROLES.ADMIN ? 'All branches' : branchName(u.branch_id)}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={u.is_active ? 'secondary' : 'outline'}>
                       {u.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="td-actions">
-                    <button className="btn btn-sm btn-outline" onClick={() => openEdit(u)}>
-                      Edit
-                    </button>
-                    <button className="btn btn-sm btn-ghost" onClick={() => toggleStatus(u)}>
-                      {u.is_active ? 'Deactivate' : 'Activate'}
-                    </button>
-                  </td>
-                </tr>
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" size="sm" onClick={() => openEdit(u)}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => toggleStatus(u)}>
+                        {u.is_active ? 'Deactivate' : 'Activate'}
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
               {users.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="td-num"
-                    style={{ textAlign: 'center', padding: '24px' }}
-                  >
+                <TableRow>
+                  <TableCell colSpan={7} className="py-6 text-center text-muted-foreground">
                     No users yet.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
       {showForm && (
         <Modal title={editUser ? 'Edit User' : 'Add User'} onClose={() => setShowForm(false)}>
-          <form className="emp-form" onSubmit={handleSubmit}>
-            {formError && <div className="alert alert-error">{formError}</div>}
+          <form className="grid gap-4" onSubmit={handleSubmit}>
+            {formError && (
+              <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {formError}
+              </div>
+            )}
 
-            <div className="field">
-              <label htmlFor="u-name">Full Name</label>
-              <input
+            <div className="grid gap-1.5">
+              <Label htmlFor="u-name">Full Name</Label>
+              <Input
                 id="u-name"
-                type="text"
                 required
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
               />
             </div>
 
-            <div className="field">
-              <label htmlFor="u-email">Email</label>
-              <input
+            <div className="grid gap-1.5">
+              <Label htmlFor="u-email">Email</Label>
+              <Input
                 id="u-email"
                 type="email"
                 required
@@ -213,12 +233,14 @@ export default function UsersPage() {
               />
             </div>
 
-            <div className="field">
-              <label htmlFor="u-password">
+            <div className="grid gap-1.5">
+              <Label htmlFor="u-password">
                 Password
-                {editUser && <span className="field-hint"> (leave blank to keep current)</span>}
-              </label>
-              <input
+                {editUser && (
+                  <span className="font-normal text-muted-foreground"> (leave blank to keep)</span>
+                )}
+              </Label>
+              <Input
                 id="u-password"
                 type="password"
                 autoComplete="new-password"
@@ -228,52 +250,56 @@ export default function UsersPage() {
               />
             </div>
 
-            <div className="field-row">
-              <div className="field">
-                <label htmlFor="u-role">Role</label>
-                <select
-                  id="u-role"
-                  value={form.role}
-                  onChange={(e) => setField('role', e.target.value)}
-                >
-                  {Object.values(ROLES).map((r) => (
-                    <option key={r} value={r}>
-                      {ROLE_LABELS[r]}
-                    </option>
-                  ))}
-                </select>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-1.5">
+                <Label htmlFor="u-role">Role</Label>
+                <Select value={form.role} onValueChange={(v) => setField('role', v)}>
+                  <SelectTrigger id="u-role" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(ROLES).map((r) => (
+                      <SelectItem key={r} value={r}>
+                        {ROLE_LABELS[r]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="field">
-                <label htmlFor="u-branch">Branch {branchScoped ? '' : '(admin = all)'}</label>
-                <select
-                  id="u-branch"
+              <div className="grid gap-1.5">
+                <Label htmlFor="u-branch">Branch {branchScoped ? '' : '(admin = all)'}</Label>
+                <Select
                   value={form.branch_id}
-                  onChange={(e) => setField('branch_id', e.target.value)}
+                  onValueChange={(v) => setField('branch_id', v)}
                   disabled={!branchScoped}
                 >
-                  <option value="">{branchScoped ? 'Select a branch…' : 'All branches'}</option>
-                  {branches.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="u-branch" className="w-full">
+                    <SelectValue placeholder={branchScoped ? 'Select a branch…' : 'All branches'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.map((b) => (
+                      <SelectItem key={b.id} value={String(b.id)}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
-            <div className="form-actions">
-              <button
+            <div className="mt-1 flex justify-end gap-2">
+              <Button
                 type="button"
-                className="btn btn-ghost"
+                variant="ghost"
                 onClick={() => setShowForm(false)}
                 disabled={saving}
               >
                 Cancel
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={saving}>
+              </Button>
+              <Button type="submit" disabled={saving}>
                 {saving ? 'Saving…' : editUser ? 'Save Changes' : 'Create User'}
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>

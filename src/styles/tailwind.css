@@ -1,0 +1,209 @@
+/* Tailwind v4 + shadcn/ui theme, mapped to the Hotel Subhedar brand palette.
+
+   Layer order (lowest priority → highest): legacy → theme → base → components
+   → utilities. The legacy admin stylesheets (index.css, App.css) are imported
+   into the `legacy` layer so Tailwind utilities always win over their global
+   `* { margin:0; padding:0 }` reset — otherwise the reset (unlayered before)
+   would override every spacing utility on the admin/login screens.
+
+   The public landing page's `landing.css` is deliberately left UNLAYERED (it's
+   imported from LandingPage.jsx), so it always wins over Tailwind utilities and
+   the site stays pixel-identical. Tailwind's preflight is intentionally not
+   imported for the same reason — the legacy reset covers the admin app. */
+@layer legacy, theme, base, components, utilities;
+@import './index.css' layer(legacy);
+@import '../features/salary/styles/App.css' layer(legacy);
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import 'tw-animate-css';
+
+/* Class-based dark mode (toggled by adding `.dark` on an ancestor — the admin
+   root does this). The landing page uses its own `.lp[data-theme]` scheme and
+   is unaffected. */
+@custom-variant dark (&:is(.dark *));
+
+/* ── Light theme (default) — "spice-market": warm cream ground, espresso
+   ink, marigold-gold accent, kumkum red for danger, warm-biased neutrals. ── */
+:root {
+  --radius: 0.625rem;
+
+  /* Surfaces & text */
+  --background: #fbf8f1;
+  --foreground: #2a2015;
+  --card: #ffffff;
+  --card-foreground: #2a2015;
+  --popover: #ffffff;
+  --popover-foreground: #2a2015;
+
+  /* Marigold-gold primary */
+  --primary: #ffbe00;
+  --primary-foreground: #1e1608;
+
+  /* Warm sand secondary / muted / accent */
+  --secondary: #f3ecdd;
+  --secondary-foreground: #4a3b22;
+  --muted: #f3ecdd;
+  --muted-foreground: #8a795c;
+  --accent: #f7efd8;
+  --accent-foreground: #2a2015;
+
+  /* Feedback + chrome (kumkum red danger, warm border/ring) */
+  --destructive: #c2272d;
+  --destructive-foreground: #ffffff;
+  --border: #e7decb;
+  --input: #e7decb;
+  --ring: #f0b000;
+
+  /* Chart ramp from the spice shelf */
+  --chart-1: #e8a33d;
+  --chart-2: #c2272d;
+  --chart-3: #7a8450;
+  --chart-4: #d97706;
+  --chart-5: #8c6239;
+
+  /* Sidebar — warm light rail in light mode (theme-aware) */
+  --sidebar: #f6f0e3;
+  --sidebar-foreground: #4a3b22;
+  --sidebar-primary: #ffbe00;
+  --sidebar-primary-foreground: #1e1509;
+  --sidebar-accent: #fceec4;
+  --sidebar-accent-foreground: #7a5600;
+  --sidebar-border: #e7decb;
+  --sidebar-ring: #f0b000;
+}
+
+/* ── Dark theme — roasted-brown-black ground, parchment ink, same gold. ── */
+.dark {
+  --background: #17110a;
+  --foreground: #eadfc8;
+  --card: #201810;
+  --card-foreground: #eadfc8;
+  --popover: #201810;
+  --popover-foreground: #eadfc8;
+
+  --primary: #ffbe00;
+  --primary-foreground: #1e1608;
+
+  --secondary: #2b2116;
+  --secondary-foreground: #eadfc8;
+  --muted: #2b2116;
+  --muted-foreground: #ac9b7d;
+  --accent: #33271a;
+  --accent-foreground: #f7ead0;
+
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff17;
+  --input: #ffffff22;
+  --ring: #ffbe00;
+
+  --chart-1: #f0b54a;
+  --chart-2: #e0575c;
+  --chart-3: #99a667;
+  --chart-4: #e8912b;
+  --chart-5: #b07e4e;
+
+  --sidebar: #120c05;
+  --sidebar-foreground: #e7ddc7;
+  --sidebar-primary: #ffbe00;
+  --sidebar-primary-foreground: #120c05;
+  --sidebar-accent: #33281a;
+  --sidebar-accent-foreground: #ffd34d;
+  --sidebar-border: #ffffff12;
+  --sidebar-ring: #ffbe00;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+}
+
+/* shadcn base defaults. Critical: without `border-border` on `*`, Tailwind v4's
+   `border` utility falls back to currentColor (black), which is why cards,
+   buttons and inputs showed black/dark borders. Lives in `@layer base` (below
+   utilities, above legacy) so component-specific border colors still win, and
+   so the unlayered landing.css keeps overriding it — the landing is untouched. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    /* Zero out UA borders and default to the theme border color, exactly as
+       Tailwind's preflight does — so `border` utilities add width back and
+       native buttons/inputs don't show stray grey UA borders. */
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--color-border);
+  }
+  *:focus-visible {
+    outline-color: var(--color-ring);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* Minimal form-control reset (preflight is not imported, to protect the
+     landing page). Without this, native <button>s keep the UA light-grey
+     background — which is why ghost/sidebar buttons showed light pills. The
+     unlayered landing CSS (.lp-btn, etc.) overrides these where it needs to. */
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
+    background-color: transparent;
+    background-image: none;
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
+}

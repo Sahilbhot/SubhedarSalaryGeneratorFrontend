@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Camera, Send } from 'lucide-react';
 import { HOTEL, HOURS } from '@/data/hotel.js';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -83,8 +86,8 @@ export default function Contact() {
 
           <form className="lp-form" onSubmit={handleSubmit}>
             <div className="field">
-              <label htmlFor="c-name">Your Name</label>
-              <input
+              <Label htmlFor="c-name">Your Name</Label>
+              <Input
                 id="c-name"
                 type="text"
                 required
@@ -95,8 +98,8 @@ export default function Contact() {
             </div>
             <div className="field-row">
               <div className="field">
-                <label htmlFor="c-phone">Phone</label>
-                <input
+                <Label htmlFor="c-phone">Phone</Label>
+                <Input
                   id="c-phone"
                   type="tel"
                   value={form.phone}
@@ -105,8 +108,8 @@ export default function Contact() {
                 />
               </div>
               <div className="field">
-                <label htmlFor="c-email">Email</label>
-                <input
+                <Label htmlFor="c-email">Email</Label>
+                <Input
                   id="c-email"
                   type="email"
                   value={form.email}
@@ -116,8 +119,8 @@ export default function Contact() {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="c-msg">Message</label>
-              <textarea
+              <Label htmlFor="c-msg">Message</Label>
+              <Textarea
                 id="c-msg"
                 required
                 value={form.message}

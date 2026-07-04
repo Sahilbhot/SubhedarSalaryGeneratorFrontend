@@ -2,8 +2,42 @@ import { useState, useEffect, useMemo } from 'react';
 import { api } from '@/shared/services/api.js';
 import Modal from '@/shared/components/Modal.jsx';
 import MenuForm from './MenuForm.jsx';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const ALL = 'All';
+
+function VegBadge({ type }) {
+  const veg = type === 'veg';
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 text-xs font-semibold ${
+        veg ? 'text-[#1a7f37]' : 'text-[#c2272d]'
+      }`}
+    >
+      <span className="relative inline-block size-3 rounded-[3px] border-[1.5px] border-current">
+        <span className="absolute inset-[2px] rounded-full bg-current" />
+      </span>
+      {veg ? 'Veg' : 'Non-Veg'}
+    </span>
+  );
+}
 
 export default function MenuPage() {
   const [items, setItems] = useState([]);
@@ -28,7 +62,6 @@ export default function MenuPage() {
     }
   }
 
-  // One-shot mount fetch.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
@@ -77,103 +110,114 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="page">
-      <div className="page-header">
+    <div>
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2>Menu</h2>
-          <p className="page-sub">Add, edit, or remove dishes shown on the website</p>
+          <h2 className="font-display text-2xl font-bold text-foreground">Menu</h2>
+          <p className="text-sm text-muted-foreground">
+            Add, edit, or remove dishes shown on the website
+          </p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-          + Add Item
-        </button>
+        <Button onClick={() => setShowAddModal(true)}>+ Add Item</Button>
       </div>
 
       {!loading && !error && items.length > 0 && (
-        <div className="menu-filter">
-          <label htmlFor="section-filter">Section</label>
-          <select
-            id="section-filter"
-            value={section}
-            onChange={(e) => setSection(e.target.value)}
-          >
-            {sections.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+        <div className="mb-4 flex items-center gap-2.5">
+          <Label htmlFor="section-filter" className="text-muted-foreground">
+            Section
+          </Label>
+          <Select value={section} onValueChange={setSection}>
+            <SelectTrigger id="section-filter" size="sm" className="w-56">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {sections.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
 
       {loading && (
-        <div className="state-box">
-          <div className="spinner" />
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+          <div className="size-8 animate-spin rounded-full border-[3px] border-border border-t-primary" />
           <p>Loading menu…</p>
         </div>
       )}
 
       {error && !loading && (
-        <div className="alert alert-error">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
-          <button className="btn btn-ghost" onClick={load}>
+          <Button variant="ghost" size="sm" onClick={load}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
       {!loading && !error && items.length === 0 && (
-        <div className="state-box empty">
-          <div className="empty-icon">🍽️</div>
+        <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
+          <div className="text-4xl">🍽️</div>
           <p>No menu items yet. Add your first dish to get started.</p>
         </div>
       )}
 
       {!loading && visible.length > 0 && (
-        <div className="emp-table-wrap">
-          <table className="emp-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Section</th>
-                <th>Type</th>
-                <th>Price</th>
-                <th>Visible</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary/60">
+                <TableHead className="w-10">#</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Section</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Visible</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {visible.map((item, i) => (
-                <tr key={item.menu_item_id}>
-                  <td className="td-num">{i + 1}</td>
-                  <td className="td-name">
-                    {item.name}
-                    {item.description && <div className="td-desc">{item.description}</div>}
-                  </td>
-                  <td>{item.section}</td>
-                  <td>
-                    <span className={`veg-badge ${item.type === 'veg' ? 'veg' : 'nonveg'}`}>
-                      <span className="veg-dot" aria-hidden="true" />
-                      {item.type === 'veg' ? 'Veg' : 'Non-Veg'}
-                    </span>
-                  </td>
-                  <td className="td-salary">₹{item.price}</td>
-                  <td>{item.is_available ? 'Yes' : 'No'}</td>
-                  <td className="td-actions">
-                    <button className="btn btn-sm btn-outline" onClick={() => setEditItem(item)}>
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => setDeleteId(item.menu_item_id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                <TableRow key={item.menu_item_id}>
+                  <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                  <TableCell className="max-w-80 whitespace-normal">
+                    <div className="font-semibold text-foreground">{item.name}</div>
+                    {item.description && (
+                      <div className="mt-0.5 text-xs text-muted-foreground">{item.description}</div>
+                    )}
+                  </TableCell>
+                  <TableCell>{item.section}</TableCell>
+                  <TableCell>
+                    <VegBadge type={item.type} />
+                  </TableCell>
+                  <TableCell className="font-semibold text-[color:var(--secondary-color)]">
+                    ₹{item.price}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={item.is_available ? 'secondary' : 'outline'}>
+                      {item.is_available ? 'Yes' : 'No'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setEditItem(item)}>
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setDeleteId(item.menu_item_id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
@@ -203,16 +247,16 @@ export default function MenuPage() {
 
       {deleteId && (
         <Modal title="Confirm Delete" onClose={() => setDeleteId(null)}>
-          <p style={{ marginBottom: '20px', color: 'var(--default-color)' }}>
+          <p className="mb-5 text-sm text-muted-foreground">
             Are you sure you want to delete this menu item? This action cannot be undone.
           </p>
-          <div className="form-actions">
-            <button className="btn btn-ghost" onClick={() => setDeleteId(null)}>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setDeleteId(null)}>
               Cancel
-            </button>
-            <button className="btn btn-danger" onClick={() => handleDelete(deleteId)}>
+            </Button>
+            <Button variant="destructive" onClick={() => handleDelete(deleteId)}>
               Delete
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

@@ -611,10 +611,11 @@
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
-.lp-acc-item--open {
+.lp-acc-item[data-state='open'] {
   border-color: color-mix(in srgb, var(--gold) 55%, var(--border));
   box-shadow: var(--shadow);
 }
+/* AccordionTrigger (a <button>); unlayered rules here win over shadcn utilities. */
 .lp-acc-header {
   width: 100%;
   display: flex;
@@ -630,19 +631,15 @@
   font-size: 21px;
   font-weight: 700;
   color: var(--heading);
+  text-decoration: none;
   transition: color 0.2s ease;
 }
 .lp-acc-header:hover {
   color: var(--red);
+  text-decoration: none;
 }
-.lp-acc-item--open .lp-acc-title {
+.lp-acc-item[data-state='open'] .lp-acc-title {
   color: var(--red);
-}
-.lp-acc-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
 }
 .lp-acc-count {
   font-family: var(--font-body);
@@ -653,19 +650,21 @@
   min-width: 26px;
   height: 26px;
   padding: 0 8px;
+  margin-left: auto;
+  margin-right: 6px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
-.lp-acc-chevron {
+/* shadcn injects its own chevron <svg> into the trigger */
+.lp-acc-header > svg {
   width: 22px;
   height: 22px;
   color: var(--text-muted);
-  transition: transform 0.28s ease;
 }
-.lp-acc-item--open .lp-acc-chevron {
-  transform: rotate(180deg);
+.lp-acc-item[data-state='open'] .lp-acc-header > svg {
   color: var(--gold-deep);
 }
 .lp-acc-panel-inner {

@@ -1,34 +1,28 @@
-import { useEffect } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
-export default function Modal({ title, onClose, children }) {
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handler);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
-    };
-  }, [onClose]);
-
+// Thin wrapper over shadcn Dialog that preserves the original Modal API
+// (`title`, `onClose`, `children`) so every page keeps working unchanged.
+// Rendered conditionally by callers, so it's open whenever mounted.
+export default function Modal({ title, description, onClose, children }) {
   return (
-    <div
-      className="modal-overlay"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="modal">
-        <div className="modal-header">
-          <h3>{title}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Close">
-            ✕
-          </button>
-        </div>
-        <div className="modal-body">{children}</div>
-      </div>
-    </div>
+    <Dialog open onOpenChange={(open) => !open && onClose?.()}>
+      <DialogContent className="max-h-[90vh] gap-4 overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="font-display text-xl text-foreground">{title}</DialogTitle>
+          {description ? (
+            <DialogDescription>{description}</DialogDescription>
+          ) : (
+            <DialogDescription className="sr-only">{title}</DialogDescription>
+          )}
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 }

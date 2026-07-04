@@ -3,7 +3,10 @@ import { LogIn, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import logoUrl from '@/assets/logo.png';
 import { HOTEL } from '@/data/hotel.js';
 import { useAuth } from './AuthContext.jsx';
-import './auth.css';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card } from '@/components/ui/card';
 
 export default function LoginPage({ onSuccess, onBack }) {
   const { login } = useAuth();
@@ -29,24 +32,32 @@ export default function LoginPage({ onSuccess, onBack }) {
   }
 
   return (
-    <div className="auth">
-      <div className="auth-card">
-        <button type="button" className="auth-back" onClick={onBack}>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#faf3e2] via-[#f5f0e8] to-[#f8e3b0] p-5">
+      <Card className="w-full max-w-md p-8">
+        <button
+          type="button"
+          className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          onClick={onBack}
+        >
           <ArrowLeft size={16} /> Back to site
         </button>
 
-        <div className="auth-brand">
-          <img src={logoUrl} alt={HOTEL.name} />
-          <h1>{HOTEL.name}</h1>
-          <p>Staff Login</p>
+        <div className="flex flex-col items-center text-center">
+          <img src={logoUrl} alt={HOTEL.name} className="size-16 rounded-xl object-contain" />
+          <h1 className="mt-3 font-display text-2xl font-bold text-foreground">{HOTEL.name}</h1>
+          <p className="text-sm text-muted-foreground">Staff Login</p>
         </div>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {error && <div className="auth-error">{error}</div>}
+        <form className="grid gap-4" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
 
-          <div className="auth-field">
-            <label htmlFor="login-email">Email</label>
-            <input
+          <div className="grid gap-1.5">
+            <Label htmlFor="login-email">Email</Label>
+            <Input
               id="login-email"
               type="email"
               autoComplete="username"
@@ -57,10 +68,10 @@ export default function LoginPage({ onSuccess, onBack }) {
             />
           </div>
 
-          <div className="auth-field">
-            <label htmlFor="login-password">Password</label>
-            <div className="auth-password">
-              <input
+          <div className="grid gap-1.5">
+            <Label htmlFor="login-password">Password</Label>
+            <div className="relative">
+              <Input
                 id="login-password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
@@ -68,10 +79,11 @@ export default function LoginPage({ onSuccess, onBack }) {
                 value={form.password}
                 onChange={(e) => setField('password', e.target.value)}
                 placeholder="••••••••"
+                className="pr-10"
               />
               <button
                 type="button"
-                className="auth-eye"
+                className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -80,14 +92,16 @@ export default function LoginPage({ onSuccess, onBack }) {
             </div>
           </div>
 
-          <button type="submit" className="auth-submit" disabled={submitting}>
+          <Button type="submit" className="w-full" disabled={submitting}>
             <LogIn size={18} />
             {submitting ? 'Signing in…' : 'Sign In'}
-          </button>
+          </Button>
         </form>
 
-        <p className="auth-hint">Accounts are created by an administrator.</p>
-      </div>
+        <p className="text-center text-xs text-muted-foreground">
+          Accounts are created by an administrator.
+        </p>
+      </Card>
     </div>
   );
 }

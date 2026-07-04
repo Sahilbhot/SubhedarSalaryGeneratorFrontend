@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const EMPTY = { employee_name: '', phone_number: '', joining_date: '', salary: '' };
 
@@ -38,34 +41,57 @@ export default function EmployeeForm({ initial = EMPTY, onSubmit, onCancel, load
   }
 
   return (
-    <form className="emp-form" onSubmit={handleSubmit} noValidate>
-      <div className="field">
-        <label>Employee Name *</label>
-        <input type="text" placeholder="e.g. Ramesh Kumar" {...field('employee_name')} />
-        {errors.employee_name && <span className="field-error">{errors.employee_name}</span>}
+    <form className="grid gap-4" onSubmit={handleSubmit} noValidate>
+      <div className="grid gap-1.5">
+        <Label htmlFor="emp-name">Employee Name *</Label>
+        <Input id="emp-name" placeholder="e.g. Ramesh Kumar" {...field('employee_name')} />
+        {errors.employee_name && (
+          <span className="text-xs text-destructive">{errors.employee_name}</span>
+        )}
       </div>
-      <div className="field">
-        <label>Phone Number</label>
-        <input type="tel" placeholder="e.g. 9876543210" maxLength={10} {...field('phone_number')} />
-        {errors.phone_number && <span className="field-error">{errors.phone_number}</span>}
+
+      <div className="grid gap-1.5">
+        <Label htmlFor="emp-phone">Phone Number</Label>
+        <Input
+          id="emp-phone"
+          type="tel"
+          placeholder="e.g. 9876543210"
+          maxLength={10}
+          {...field('phone_number')}
+        />
+        {errors.phone_number && (
+          <span className="text-xs text-destructive">{errors.phone_number}</span>
+        )}
       </div>
-      <div className="field">
-        <label>Joining Date *</label>
-        <input type="date" {...field('joining_date')} />
-        {errors.joining_date && <span className="field-error">{errors.joining_date}</span>}
+
+      <div className="grid gap-1.5">
+        <Label htmlFor="emp-date">Joining Date *</Label>
+        <Input id="emp-date" type="date" {...field('joining_date')} />
+        {errors.joining_date && (
+          <span className="text-xs text-destructive">{errors.joining_date}</span>
+        )}
       </div>
-      <div className="field">
-        <label>Salary / Month (₹) *</label>
-        <input type="number" min="1" step="100" placeholder="e.g. 12000" {...field('salary')} />
-        {errors.salary && <span className="field-error">{errors.salary}</span>}
+
+      <div className="grid gap-1.5">
+        <Label htmlFor="emp-salary">Salary / Month (₹) *</Label>
+        <Input
+          id="emp-salary"
+          type="number"
+          min="1"
+          step="100"
+          placeholder="e.g. 12000"
+          {...field('salary')}
+        />
+        {errors.salary && <span className="text-xs text-destructive">{errors.salary}</span>}
       </div>
-      <div className="form-actions">
-        <button type="button" className="btn btn-ghost" onClick={onCancel} disabled={loading}>
+
+      <div className="mt-1 flex justify-end gap-2">
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={loading}>
           Cancel
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        </Button>
+        <Button type="submit" disabled={loading}>
           {loading ? 'Saving…' : 'Save Employee'}
-        </button>
+        </Button>
       </div>
     </form>
   );

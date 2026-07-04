@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/shared/services/api.js';
 import Modal from '@/shared/components/Modal.jsx';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const EMPTY_FORM = { name: '', address: '' };
 
@@ -66,89 +78,88 @@ export default function BranchesPage() {
   }
 
   return (
-    <div className="page">
-      <div className="page-header">
+    <div>
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2>Branches</h2>
-          <p className="page-sub">Manage hotel branches / locations</p>
+          <h2 className="font-display text-2xl font-bold text-foreground">Branches</h2>
+          <p className="text-sm text-muted-foreground">Manage hotel branches / locations</p>
         </div>
-        <button className="btn btn-primary" onClick={openCreate}>
-          + Add Branch
-        </button>
+        <Button onClick={openCreate}>+ Add Branch</Button>
       </div>
 
       {loading && (
-        <div className="state-box">
-          <div className="spinner" />
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+          <div className="size-8 animate-spin rounded-full border-[3px] border-border border-t-primary" />
           <p>Loading branches…</p>
         </div>
       )}
 
       {error && !loading && (
-        <div className="alert alert-error">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
-          <button className="btn btn-ghost" onClick={load}>
+          <Button variant="ghost" size="sm" onClick={load}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
       {!loading && !error && (
-        <div className="emp-table-wrap">
-          <table className="emp-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary/60">
+                <TableHead className="w-10">#</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {branches.map((b, i) => (
-                <tr key={b.id}>
-                  <td className="td-num">{i + 1}</td>
-                  <td className="td-name">{b.name}</td>
-                  <td>{b.address || '—'}</td>
-                  <td>
-                    <span className={`badge ${b.is_active ? 'badge-on' : 'badge-off'}`}>
+                <TableRow key={b.id}>
+                  <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                  <TableCell className="font-semibold text-foreground">{b.name}</TableCell>
+                  <TableCell>{b.address || '—'}</TableCell>
+                  <TableCell>
+                    <Badge variant={b.is_active ? 'secondary' : 'outline'}>
                       {b.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="td-actions">
-                    <button className="btn btn-sm btn-outline" onClick={() => openEdit(b)}>
-                      Edit
-                    </button>
-                  </td>
-                </tr>
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" size="sm" onClick={() => openEdit(b)}>
+                        Edit
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
               {branches.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="td-num"
-                    style={{ textAlign: 'center', padding: '24px' }}
-                  >
+                <TableRow>
+                  <TableCell colSpan={5} className="py-6 text-center text-muted-foreground">
                     No branches yet. Add your first branch.
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
       {showForm && (
         <Modal title={editBranch ? 'Edit Branch' : 'Add Branch'} onClose={() => setShowForm(false)}>
-          <form className="emp-form" onSubmit={handleSubmit}>
-            {formError && <div className="alert alert-error">{formError}</div>}
+          <form className="grid gap-4" onSubmit={handleSubmit}>
+            {formError && (
+              <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {formError}
+              </div>
+            )}
 
-            <div className="field">
-              <label htmlFor="b-name">Branch Name</label>
-              <input
+            <div className="grid gap-1.5">
+              <Label htmlFor="b-name">Branch Name</Label>
+              <Input
                 id="b-name"
-                type="text"
                 required
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
@@ -156,29 +167,28 @@ export default function BranchesPage() {
               />
             </div>
 
-            <div className="field">
-              <label htmlFor="b-address">Address</label>
-              <input
+            <div className="grid gap-1.5">
+              <Label htmlFor="b-address">Address</Label>
+              <Input
                 id="b-address"
-                type="text"
                 value={form.address}
                 onChange={(e) => setField('address', e.target.value)}
                 placeholder="Optional"
               />
             </div>
 
-            <div className="form-actions">
-              <button
+            <div className="mt-1 flex justify-end gap-2">
+              <Button
                 type="button"
-                className="btn btn-ghost"
+                variant="ghost"
                 onClick={() => setShowForm(false)}
                 disabled={saving}
               >
                 Cancel
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={saving}>
+              </Button>
+              <Button type="submit" disabled={saving}>
                 {saving ? 'Saving…' : editBranch ? 'Save Changes' : 'Create Branch'}
-              </button>
+              </Button>
             </div>
           </form>
         </Modal>

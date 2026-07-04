@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 import { api } from '@/shared/services/api.js';
 import EmployeeForm from '../components/EmployeeForm.jsx';
 import Modal from '@/shared/components/Modal.jsx';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState([]);
@@ -25,8 +34,6 @@ export default function EmployeesPage() {
     }
   }
 
-  // Fetch on mount. The synchronous setState inside load() is intentional
-  // (initial loading state) — safe for a one-shot mount fetch.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
@@ -85,76 +92,81 @@ export default function EmployeesPage() {
   }
 
   return (
-    <div className="page">
-      <div className="page-header">
+    <div>
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h2>Employees</h2>
-          <p className="page-sub">Manage your hotel staff</p>
+          <h2 className="font-display text-2xl font-bold text-foreground">Employees</h2>
+          <p className="text-sm text-muted-foreground">Manage your hotel staff</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-          + Add Employee
-        </button>
+        <Button onClick={() => setShowAddModal(true)}>+ Add Employee</Button>
       </div>
 
       {loading && (
-        <div className="state-box">
-          <div className="spinner" />
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+          <div className="size-8 animate-spin rounded-full border-[3px] border-border border-t-primary" />
           <p>Loading employees…</p>
         </div>
       )}
 
       {error && !loading && (
-        <div className="alert alert-error">
+        <div className="flex items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
-          <button className="btn btn-ghost" onClick={load}>
+          <Button variant="ghost" size="sm" onClick={load}>
             Retry
-          </button>
+          </Button>
         </div>
       )}
 
       {!loading && !error && employees.length === 0 && (
-        <div className="state-box empty">
-          <div className="empty-icon">👥</div>
+        <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
+          <div className="text-4xl">👥</div>
           <p>No employees yet. Add your first employee to get started.</p>
         </div>
       )}
 
       {!loading && employees.length > 0 && (
-        <div className="emp-table-wrap">
-          <table className="emp-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Joining Date</th>
-                <th>Salary/Month</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-secondary/60">
+                <TableHead className="w-10">#</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Joining Date</TableHead>
+                <TableHead>Salary/Month</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {employees.map((emp, i) => (
-                <tr key={emp.employee_id}>
-                  <td className="td-num">{i + 1}</td>
-                  <td className="td-name">{emp.employee_name}</td>
-                  <td>{emp.phone_number || '—'}</td>
-                  <td>{formatDate(emp.joining_date)}</td>
-                  <td className="td-salary">{formatSalary(emp.salary)}</td>
-                  <td className="td-actions">
-                    <button className="btn btn-sm btn-outline" onClick={() => setEditEmployee(emp)}>
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => setDeleteId(emp.employee_id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                <TableRow key={emp.employee_id}>
+                  <TableCell className="text-muted-foreground">{i + 1}</TableCell>
+                  <TableCell className="font-semibold text-foreground">
+                    {emp.employee_name}
+                  </TableCell>
+                  <TableCell>{emp.phone_number || '—'}</TableCell>
+                  <TableCell>{formatDate(emp.joining_date)}</TableCell>
+                  <TableCell className="font-semibold text-[color:var(--secondary-color)]">
+                    {formatSalary(emp.salary)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" size="sm" onClick={() => setEditEmployee(emp)}>
+                        Edit
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setDeleteId(emp.employee_id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
@@ -186,16 +198,16 @@ export default function EmployeesPage() {
 
       {deleteId && (
         <Modal title="Confirm Delete" onClose={() => setDeleteId(null)}>
-          <p style={{ marginBottom: '20px', color: 'var(--default-color)' }}>
+          <p className="mb-5 text-sm text-muted-foreground">
             Are you sure you want to delete this employee? This action cannot be undone.
           </p>
-          <div className="form-actions">
-            <button className="btn btn-ghost" onClick={() => setDeleteId(null)}>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setDeleteId(null)}>
               Cancel
-            </button>
-            <button className="btn btn-danger" onClick={() => handleDelete(deleteId)}>
+            </Button>
+            <Button variant="destructive" onClick={() => handleDelete(deleteId)}>
               Delete
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

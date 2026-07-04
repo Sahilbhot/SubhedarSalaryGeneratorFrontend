@@ -1,4 +1,16 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // Sections that already exist on the printed menu — offered as suggestions.
 // The field is a free-text input, so admins can also create a brand-new section.
@@ -55,82 +67,102 @@ export default function MenuForm({ initial = EMPTY, onSubmit, onCancel, loading 
     });
   }
 
-  function field(name) {
-    return {
-      value: form[name],
-      onChange: (ev) => {
-        setForm((f) => ({ ...f, [name]: ev.target.value }));
-        setErrors((e) => ({ ...e, [name]: '' }));
-      },
-    };
+  function set(name, value) {
+    setForm((f) => ({ ...f, [name]: value }));
+    setErrors((e) => ({ ...e, [name]: '' }));
   }
 
   return (
-    <form className="emp-form" onSubmit={handleSubmit} noValidate>
-      <div className="field">
-        <label>Item Name *</label>
-        <input type="text" placeholder="e.g. Mutton Sukkha" {...field('name')} />
-        {errors.name && <span className="field-error">{errors.name}</span>}
+    <form className="grid gap-4" onSubmit={handleSubmit} noValidate>
+      <div className="grid gap-1.5">
+        <Label htmlFor="menu-name">Item Name *</Label>
+        <Input
+          id="menu-name"
+          placeholder="e.g. Mutton Sukkha"
+          value={form.name}
+          onChange={(e) => set('name', e.target.value)}
+        />
+        {errors.name && <span className="text-xs text-destructive">{errors.name}</span>}
       </div>
 
-      <div className="field">
-        <label>Description</label>
-        <textarea
+      <div className="grid gap-1.5">
+        <Label htmlFor="menu-desc">Description</Label>
+        <Textarea
+          id="menu-desc"
           rows={2}
           placeholder="e.g. Mutton Sukkha, Rassa, Indrayani Rice, 2 Bhakri/Chapati"
-          {...field('description')}
+          value={form.description}
+          onChange={(e) => set('description', e.target.value)}
         />
       </div>
 
-      <div className="field">
-        <label>Price (₹) *</label>
-        <input type="text" placeholder="e.g. 270 or 580/950" {...field('price')} />
-        {errors.price && <span className="field-error">{errors.price}</span>}
-        <span className="field-hint">Use a slash for half/full prices, e.g. 580/950.</span>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label htmlFor="menu-price">Price (₹) *</Label>
+          <Input
+            id="menu-price"
+            placeholder="e.g. 270 or 580/950"
+            value={form.price}
+            onChange={(e) => set('price', e.target.value)}
+          />
+          {errors.price ? (
+            <span className="text-xs text-destructive">{errors.price}</span>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">
+              Use a slash for half/full, e.g. 580/950.
+            </span>
+          )}
+        </div>
+
+        <div className="grid gap-1.5">
+          <Label htmlFor="menu-type">Type *</Label>
+          <Select value={form.type} onValueChange={(v) => set('type', v)}>
+            <SelectTrigger id="menu-type" className="w-full">
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="veg">Veg</SelectItem>
+              <SelectItem value="non-veg">Non-Veg</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <div className="field">
-        <label>Type *</label>
-        <select {...field('type')}>
-          <option value="veg">Veg</option>
-          <option value="non-veg">Non-Veg</option>
-        </select>
-      </div>
-
-      <div className="field">
-        <label>Section *</label>
-        <input
-          type="text"
+      <div className="grid gap-1.5">
+        <Label htmlFor="menu-section">Section *</Label>
+        <Input
+          id="menu-section"
           list="menu-sections"
           placeholder="e.g. Mutton Starter"
-          {...field('section')}
+          value={form.section}
+          onChange={(e) => set('section', e.target.value)}
         />
         <datalist id="menu-sections">
           {KNOWN_SECTIONS.map((s) => (
             <option key={s} value={s} />
           ))}
         </datalist>
-        {errors.section && <span className="field-error">{errors.section}</span>}
+        {errors.section && <span className="text-xs text-destructive">{errors.section}</span>}
       </div>
 
-      <div className="field field-checkbox">
-        <label>
-          <input
-            type="checkbox"
-            checked={form.is_available}
-            onChange={(ev) => setForm((f) => ({ ...f, is_available: ev.target.checked }))}
-          />
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id="menu-available"
+          checked={form.is_available}
+          onCheckedChange={(v) => set('is_available', v === true)}
+        />
+        <Label htmlFor="menu-available" className="font-normal">
           Show on website
-        </label>
+        </Label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="btn btn-ghost" onClick={onCancel} disabled={loading}>
+      <div className="mt-1 flex justify-end gap-2">
+        <Button type="button" variant="ghost" onClick={onCancel} disabled={loading}>
           Cancel
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        </Button>
+        <Button type="submit" disabled={loading}>
           {loading ? 'Saving…' : 'Save Item'}
-        </button>
+        </Button>
       </div>
     </form>
   );
